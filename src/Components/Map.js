@@ -7,7 +7,7 @@ function ChangeMapView({ coords }) {
   map.setView(coords, map.getZoom()); // Updates the map view to the new coordinates
 }
 
-export default function Map() {
+export default function Map({ newAdressData }) {
   const [location, setLocation] = useState(null); // Start with null to delay map rendering
 
   useEffect(() => {
