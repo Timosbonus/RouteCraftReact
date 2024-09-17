@@ -1,45 +1,36 @@
-import React, { useState, useEffect } from "react";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
+import { useEffect } from "react";
 
-// Custom component to update map center
+// Component to change the position of the map
 function ChangeMapView({ coords }) {
-  const map = useMap();
-  map.setView(coords, map.getZoom()); // Updates the map view to the new coordinates
+  const map = useMap(); // Access the map instance
+  useEffect(() => {
+    map.setView(coords, 13); // Update map view to new coordinates
+  }, [coords, map]);
+  return null;
 }
 
-export default function Map({ newAdressData }) {
-  const [location, setLocation] = useState(null); // Start with null to delay map rendering
-
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(success, error); // navigator needs sucess and error function and gives position to sucess func
-  }, []);
-
-  function success(position) {
-    const newLocation = [position.coords.latitude, position.coords.longitude];
-    setLocation(newLocation);
-    console.log(location);
-  }
-
-  function error() {
-    console.log("Unable to retrieve your location");
-  }
-
-  if (!location) {
-    return <div>Loading map...</div>; // Show a loading state before the location is found
-  }
+export default function Map({ location }) {
+  // Renders all items in the location List with Popups
+  const locationList = location.map((place, index) => (
+    <Marker position={place} key={index}>
+      <Popup>Position: {place.join(", ")}</Popup>
+    </Marker>
+  ));
 
   return (
-    <MapContainer center={location} zoom={13} scrollWheelZoom={true}>
+    <MapContainer
+      center={location[0]} // Center on the last location
+      zoom={13}
+      scrollWheelZoom={true}
+    >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      {location && <ChangeMapView coords={location} />}
-      {location && (
-        <Marker position={location}>
-          <Popup>Position: {location.join(", ")}</Popup>
-        </Marker>
-      )}
+      <ChangeMapView coords={location[location.length - 1]} />
+      {/* ChangeMapView updates to the newest point */}
+      {locationList}
     </MapContainer>
   );
 }
