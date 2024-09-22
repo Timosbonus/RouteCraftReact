@@ -1,17 +1,18 @@
 import "./App.css";
 import { useRef, useState, useEffect } from "react";
 import Map from "./Components/Map";
+import DirectionsComponent from "./Components/Directions";
 
 function App() {
   const adressInput = useRef(null); // Input reference
-  const [location, setLocation] = useState([]); // Start with an empty array
+  const [locations, setLocations] = useState([]); // Start with an empty array
   const [suggestions, setSuggestions] = useState([]); // empty array for suggestions
   const [debounceTimeout, setDebounceTimeout] = useState(null); // State for debounce timer
 
   // Geolocation success and error handlers
   function success(position) {
     const newLocation = [position.coords.latitude, position.coords.longitude];
-    setLocation([newLocation]); // Replace the location with new coordinates
+    setLocations([newLocation]); // Replace the location with new coordinates
     console.log("User's location:", newLocation);
   }
 
@@ -54,7 +55,7 @@ function App() {
             parseFloat(json[0].lat),
             parseFloat(json[0].lon),
           ];
-          setLocation([...location, newLocation]); // Adds the entered Location to the existing Locations
+          setLocations([...locations, newLocation]); // Adds the entered Location to the existing Locations
         }
       })
       .catch((error) => console.error("Error fetching address:", error));
@@ -111,9 +112,10 @@ function App() {
         )}
         <button onClick={setNewAdress}>Set Address</button>
       </div>
+      <DirectionsComponent locations={locations}></DirectionsComponent>
 
       {/* Conditionally render the map if the location is available */}
-      {location.length ? <Map location={location} /> : <p>Loading map...</p>}
+      {locations.length ? <Map locations={locations} /> : <p>Loading map...</p>}
     </div>
   );
 }
