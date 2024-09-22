@@ -5,6 +5,8 @@ import Map from "./Components/Map";
 function App() {
   const adressInput = useRef(null); // Input reference
   const [location, setLocation] = useState([]); // Start with an empty array
+  const [suggestions, setSuggestions] = useState([]); // empty array for suggestions
+  const [debounceTimeout, setDebounceTimeout] = useState(null); // State for debounce timer
 
   // Geolocation success and error handlers
   function success(position) {
@@ -41,9 +43,9 @@ function App() {
 
     fetch(
       // fetching the api for geocoding the adress to coods
-      `https://us1.locationiq.com/v1/search?key=pk.59909c833b95a185032a1981fe1619ae&q=${encodeURIComponent(
-        inputValue
-      )}&format=json`
+      `https://us1.locationiq.com/v1/search?key=${
+        process.env.REACT_APP_LOCATIONIQ_KEY
+      }&q=${encodeURIComponent(inputValue)}&format=json`
     )
       .then((response) => response.json())
       .then((json) => {
@@ -58,10 +60,55 @@ function App() {
       .catch((error) => console.error("Error fetching address:", error));
   }
 
+  // Function to handle the autocompletion feature
+  function getAutocompletion() {
+    const inputValue = adressInput.current.value;
+
+    // Clear the previous debounce timer
+    if (debounceTimeout) {
+      clearTimeout(debounceTimeout);
+    }
+
+    // Set a new debounce timer
+    const newTimeout = setTimeout(() => {
+      if (inputValue.length >= 3) {
+        // Make the API call only if at least 3 characters are typed
+        fetch(
+          `https://api.locationiq.com/v1/autocomplete?key=${
+            process.env.REACT_APP_LOCATIONIQ_KEY
+          }&q=${encodeURIComponent(inputValue)}&limit=5&dedupe=1&`
+        )
+          .then((response) => response.json())
+          .then((json) => {
+            if (json && json.length > 0) {
+              setSuggestions(json);
+            }
+          })
+          .catch((error) => console.error("Error fetching address:", error));
+      }
+    }, 300); // Debounce delay of 300ms
+
+    setDebounceTimeout(newTimeout); // Update the debounceTimeout state
+  }
+
   return (
     <div className="App">
       <div>
-        <input ref={adressInput} placeholder="Enter an address" />
+        <input
+          ref={adressInput}
+          list="suggestions"
+          placeholder="Enter an address"
+          onChange={getAutocompletion}
+        />
+        {suggestions.length > 0 && (
+          <datalist id="suggestions">
+            {suggestions.map((sug, index) => (
+              <option key={index} value={sug.display_name}>
+                {sug.display_name}
+              </option>
+            ))}
+          </datalist>
+        )}
         <button onClick={setNewAdress}>Set Address</button>
       </div>
 
