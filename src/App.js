@@ -1,7 +1,6 @@
 import "./App.css";
 import { useRef, useState, useEffect } from "react";
 import Map from "./Components/Map";
-import DirectionsComponent from "./Components/Directions";
 
 function App() {
   const adressInput = useRef(null); // Input reference
@@ -13,7 +12,6 @@ function App() {
   function success(position) {
     const newLocation = [position.coords.latitude, position.coords.longitude];
     setLocations([newLocation]); // Replace the location with new coordinates
-    console.log("User's location:", newLocation);
   }
 
   function error() {
@@ -112,7 +110,6 @@ function App() {
         )}
         <button onClick={setNewAdress}>Set Address</button>
       </div>
-      <DirectionsComponent locations={locations}></DirectionsComponent>
 
       {/* Conditionally render the map if the location is available */}
       {locations.length ? <Map locations={locations} /> : <p>Loading map...</p>}

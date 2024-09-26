@@ -1,14 +1,20 @@
 import { useEffect, useState } from "react";
+import { Polyline } from "react-leaflet";
+
+import polyline from "@mapbox/polyline"; // Import the polyline decoder
 
 function DirectionsComponent({ locations }) {
   const [directions, setDirections] = useState([]); // Array to hold directions
 
   // gets the data between two locations and populates the directions array
   useEffect(() => {
-    if (locations.length >= 2) {
-      // Generate the waypoints string dynamically based on locations
-      const waypoints = locations.map((loc) => loc.join(",")).join(";");
-      console.log(waypoints);
+    const len = locations.length;
+    if (len > 1) {
+      // Generate the waypoints string with the last two elements from the array
+      const waypoints = locations
+        .slice(-2)
+        .map((loc) => `${loc[1]},${loc[0]}`) // Reverse [lat, lng] to [lng, lat]
+        .join(";");
 
       // Fetch directions from LocationIQ API
       fetch(
@@ -17,8 +23,15 @@ function DirectionsComponent({ locations }) {
         .then((response) => response.json())
         .then((json) => {
           if (json && json.routes) {
-            setDirections([...directions, json.routes]); // Update the directions with the routes data
-            console.log("Directions:", json.routes);
+            const decodedRoute = polyline
+              .decode(json.routes[0].geometry)
+              .map(([lat, lng]) => [lat, lng]);
+
+            // Use functional update to ensure previous state is correctly updated
+            setDirections((prevDirections) => [
+              ...prevDirections,
+              decodedRoute,
+            ]);
           } else {
             console.error("No routes found");
           }
@@ -28,20 +41,11 @@ function DirectionsComponent({ locations }) {
   }, [locations]); // Re-run when locations change
 
   return (
-    <div>
-      <h2>Directions</h2>
-      {directions.length > 0 ? (
-        <ul>
-          {directions.map((route, index) => (
-            <li key={index}>
-              Route {index + 1}: {route[0].legs[0].summary}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No directions available.</p>
-      )}
-    </div>
+    <>
+      {directions.map((route, index) => (
+        <Polyline key={index} positions={route} color="red" />
+      ))}
+    </>
   );
 }
 
