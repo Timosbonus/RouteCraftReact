@@ -37,7 +37,10 @@ function App() {
   }, []); // Empty dependency array, run only on component mount
 
   // Function to handle new address input and make API call
-  function setNewAdress() {
+  function setNewAdress(event) {
+    // event automatically inserted, prevents Map to rerender when SetAdress Button is pressed
+    event.preventDefault();
+
     const inputValue = adressInput.current.value; // Access the input value
 
     fetch(
@@ -53,7 +56,7 @@ function App() {
             parseFloat(json[0].lat),
             parseFloat(json[0].lon),
           ];
-          setLocations([...locations, newLocation]); // Adds the entered Location to the existing Locations
+          setLocations((prevLocations) => [...prevLocations, newLocation]); // Adds the entered Location to the existing Locations
         }
       })
       .catch((error) => console.error("Error fetching address:", error));
@@ -92,27 +95,69 @@ function App() {
 
   return (
     <div className="App">
-      <div>
-        <input
-          ref={adressInput}
-          list="suggestions"
-          placeholder="Enter an address"
-          onChange={getAutocompletion}
-        />
-        {suggestions.length > 0 && (
-          <datalist id="suggestions">
-            {suggestions.map((sug, index) => (
-              <option key={index} value={sug.display_name}>
-                {sug.display_name}
-              </option>
-            ))}
-          </datalist>
-        )}
-        <button onClick={setNewAdress}>Set Address</button>
-      </div>
+      <nav className="navbar bg-body-tertiary p-3">
+        <div className="container-fluid">
+          <a className="navbar-brand d-flex align-items-center" href="navbar">
+            <img
+              src={`${process.env.PUBLIC_URL}/assets/route.png`}
+              alt="Logo"
+              width="30"
+              height="30"
+              className="d-inline-block align-text-top"
+            />
+            <span
+              style={{
+                marginLeft: "20px",
+                fontWeight: "bold",
+                fontSize: "1.5rem",
+              }}
+            >
+              Routeplanner
+            </span>
+          </a>
 
-      {/* Conditionally render the map if the location is available */}
-      {locations.length ? <Map locations={locations} /> : <p>Loading map...</p>}
+          <span className="mx-3 text-muted" style={{ fontSize: "1.2rem" }}>
+            Current Selected Route
+          </span>
+
+          <form className="d-flex" role="search">
+            <input
+              className="form-control me-2"
+              aria-label="Search"
+              type="search"
+              ref={adressInput}
+              list="suggestions"
+              placeholder="Enter an address"
+              onChange={getAutocompletion}
+            />
+            <button
+              onClick={setNewAdress}
+              className="btn btn-outline-primary"
+              type="submit"
+            >
+              Set Address
+            </button>
+            {suggestions.length > 0 && (
+              <datalist id="suggestions">
+                {suggestions.map((sug, index) => (
+                  <option key={index} value={sug.display_name}>
+                    {sug.display_name}
+                  </option>
+                ))}
+              </datalist>
+            )}
+          </form>
+        </div>
+      </nav>
+
+      <div>
+        {/* Conditionally render the map if the location is available */}
+        {locations.length ? (
+          <Map locations={locations} />
+        ) : (
+          <p>Loading map...</p>
+        )}
+      </div>
     </div>
   );
 }
