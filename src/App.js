@@ -88,7 +88,7 @@ function App() {
           })
           .catch((error) => console.error("Error fetching address:", error));
       }
-    }, 300); // Debounce delay of 300ms
+    }, 200); // Debounce delay of 300ms
 
     setDebounceTimeout(newTimeout); // Update the debounceTimeout state
   }
@@ -96,7 +96,7 @@ function App() {
   return (
     <div className="App">
       <nav className="navbar bg-body-tertiary p-3">
-        <div className="container-fluid">
+        <div className="container-fluid d-flex justify-content-between align-items-center">
           <a className="navbar-brand d-flex align-items-center" href="navbar">
             <img
               src={`${process.env.PUBLIC_URL}/assets/route.png`}
@@ -116,41 +116,72 @@ function App() {
             </span>
           </a>
 
-          <span className="mx-3 text-muted" style={{ fontSize: "1.2rem" }}>
+          <span
+            className="text-muted mx-3"
+            style={{ fontSize: "1.2rem", paddingLeft: "250px" }}
+          >
             Current Selected Route
           </span>
 
-          <form className="d-flex" role="search">
-            <input
-              className="form-control me-2"
-              aria-label="Search"
-              type="search"
-              ref={adressInput}
-              list="suggestions"
-              placeholder="Enter an address"
-              onChange={getAutocompletion}
-            />
+          <form
+            className="d-flex align-items-start position-relative"
+            role="search"
+          >
+            <div className="position-relative" style={{ flexGrow: 1 }}>
+              <input
+                className="form-control"
+                aria-label="Search"
+                type="search"
+                ref={adressInput}
+                placeholder="Enter an address"
+                onChange={getAutocompletion}
+                autoComplete="off" // Prevents default browser autocompletion
+                style={{ width: "400px" }} // Make the input field wider
+              />
+
+              {/* Custom dropdown styling for suggestions */}
+              {suggestions.length > 0 && (
+                <ul
+                  className="dropdown-menu show w-100 position-absolute"
+                  style={{
+                    maxHeight: "200px",
+                    overflowY: "auto",
+                    top: "100%",
+                  }}
+                >
+                  {suggestions.map((sug, index) => (
+                    <li key={index}>
+                      <button
+                        className="dropdown-item"
+                        type="button"
+                        onClick={() => {
+                          adressInput.current.value = sug.display_name;
+                          setSuggestions([]); // Clear suggestions after selection
+                        }}
+                      >
+                        {sug.display_name}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
             <button
               onClick={setNewAdress}
-              className="btn btn-outline-primary"
+              className="btn btn-outline-primary ms-2"
               type="submit"
             >
               Set Address
             </button>
-            {suggestions.length > 0 && (
-              <datalist id="suggestions">
-                {suggestions.map((sug, index) => (
-                  <option key={index} value={sug.display_name}>
-                    {sug.display_name}
-                  </option>
-                ))}
-              </datalist>
-            )}
           </form>
         </div>
       </nav>
 
-      <div>
+      <div
+        className="map-container"
+        style={{ height: "92vh", overflow: "hidden" }}
+      >
         {/* Conditionally render the map if the location is available */}
         {locations.length ? (
           <Map locations={locations} />
