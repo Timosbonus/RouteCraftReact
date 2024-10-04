@@ -60,10 +60,10 @@ function Navbar({ adressInput, setNewAdress }) {
           <img
             src={`${process.env.PUBLIC_URL}/assets/route.png`}
             alt="Logo"
-            width="30"
-            height="30"
+            width="40"
+            height="40"
           />
-          <span className="custom-title">Routeplanner</span>
+          <span className="custom-title">RouteCraft</span>
         </a>
 
         <span className="current-route">Current Selected Route</span>
