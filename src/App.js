@@ -7,37 +7,13 @@ function App() {
   const adressInput = useRef(null);
   const [locations, setLocations] = useState([]);
 
-  function success(position) {
-    const newLocation = [position.coords.latitude, position.coords.longitude];
-    setLocations([newLocation]);
-  }
-
-  function error() {
-    console.log("Unable to retrieve your location");
-  }
-
   useEffect(() => {
-    if ("geolocation" in navigator) {
-      navigator.permissions
-        .query({ name: "geolocation" })
-        .then((result) => {
-          if (result.state === "granted" || result.state === "prompt") {
-            navigator.geolocation.getCurrentPosition(success, error);
-          } else if (result.state === "denied") {
-            console.log("Geolocation access denied. Please enable location.");
-          }
-        })
-        .catch(() => console.log("Error checking geolocation permission"));
-    } else {
-      console.log("Geolocation is not supported by this browser.");
-    }
-  }, []);
+    // Set the starting address and fetch its location only once
+    const startPoint = "Ersigstraße 10a, 76275 Ettlingen";
+    setNewAdress(startPoint); // Call the function to set the new address
+  }); // Leeres Abhängigkeits-Array, damit es nur einmal aufgerufen wird
 
-  function setNewAdress(event) {
-    event.preventDefault();
-
-    const inputValue = adressInput.current.value;
-
+  function setNewAdress(inputValue) {
     fetch(
       `https://us1.locationiq.com/v1/search?key=${
         process.env.REACT_APP_LOCATIONIQ_KEY
@@ -45,12 +21,16 @@ function App() {
     )
       .then((response) => response.json())
       .then((json) => {
+        // json response added to the location array (object)
         if (json && json.length > 0) {
-          const newLocation = [
-            parseFloat(json[0].lat),
-            parseFloat(json[0].lon),
-          ];
-          setLocations((prevLocations) => [...prevLocations, newLocation]);
+          const newLocation = json[0];
+
+          // Überprüfen, ob die neue Position bereits existiert
+          const exists = locations.some((loc) => loc.lon === newLocation.lon);
+
+          if (!exists) {
+            setLocations((prevLocations) => [...prevLocations, newLocation]);
+          }
         }
       })
       .catch((error) => console.error("Error fetching address:", error));

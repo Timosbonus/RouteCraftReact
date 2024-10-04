@@ -19,13 +19,13 @@ export default function Map({ locations }) {
     iconUrl: `${process.env.PUBLIC_URL}/assets/location.png`,
     iconSize: [40, 40],
     iconAnchor: [20, 30],
-    popupAnchor: [0,0],
+    popupAnchor: [0, 0],
   });
 
   // Renders all items in the location List with Popups
-  const locationList = locations.map((place, index) => (
-    <Marker position={place} key={index} icon={customIcon}>
-      <Popup>Position: {place.join(", ")}</Popup>
+  const locationList = locations.map((current, index) => (
+    <Marker position={[current.lat, current.lon]} key={index} icon={customIcon}>
+      <Popup>{current.display_name}</Popup>
     </Marker>
   ));
 
@@ -42,7 +42,12 @@ export default function Map({ locations }) {
 
       <DirectionsComponent locations={locations}></DirectionsComponent>
 
-      <ChangeMapView coords={locations[locations.length - 1]} />
+      <ChangeMapView
+        coords={[
+          locations[locations.length - 1].lat,
+          locations[locations.length - 1].lon,
+        ]}
+      />
       {/* ChangeMapView updates to the newest point */}
       {locationList}
     </MapContainer>

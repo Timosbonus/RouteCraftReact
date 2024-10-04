@@ -53,6 +53,13 @@ function Navbar({ adressInput, setNewAdress }) {
     };
   }, [dropdownRef]);
 
+  // Helper Function to get the event from the form und call setNewAdress Function
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const inputValue = adressInput.current.value;
+    setNewAdress(inputValue);
+  };
+
   return (
     <nav className="custom-navbar">
       <div className="custom-container">
@@ -97,7 +104,7 @@ function Navbar({ adressInput, setNewAdress }) {
             )}
           </div>
 
-          <button onClick={setNewAdress} className="custom-btn" type="submit">
+          <button onClick={handleSubmit} className="custom-btn" type="submit">
             Set Address
           </button>
         </form>
