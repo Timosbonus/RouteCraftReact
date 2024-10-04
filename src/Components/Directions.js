@@ -43,7 +43,11 @@ function DirectionsComponent({ locations }) {
   return (
     <>
       {directions.map((route, index) => (
-        <Polyline key={index} positions={route} color="red" />
+        <Polyline
+          key={index}
+          positions={route}
+          pathOptions={{ color: "blue", weight: 5, opacity: 0.7 }}
+        />
       ))}
     </>
   );

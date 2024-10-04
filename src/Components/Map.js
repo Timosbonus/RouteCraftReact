@@ -1,4 +1,5 @@
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
+import L from "leaflet";
 import { useEffect } from "react";
 
 import DirectionsComponent from "./Directions";
@@ -13,9 +14,17 @@ function ChangeMapView({ coords }) {
 }
 
 export default function Map({ locations }) {
+  // custom Icon Styling
+  const customIcon = new L.Icon({
+    iconUrl: `${process.env.PUBLIC_URL}/assets/location.png`,
+    iconSize: [40, 40],
+    iconAnchor: [20, 30],
+    popupAnchor: [0,0],
+  });
+
   // Renders all items in the location List with Popups
   const locationList = locations.map((place, index) => (
-    <Marker position={place} key={index}>
+    <Marker position={place} key={index} icon={customIcon}>
       <Popup>Position: {place.join(", ")}</Popup>
     </Marker>
   ));

@@ -60,7 +60,7 @@ function App() {
     <div className="App">
       <Navbar adressInput={adressInput} setNewAdress={setNewAdress}></Navbar>
 
-      <div className="map-container">
+      <div>
         {locations.length ? (
           <Map locations={locations} />
         ) : (
