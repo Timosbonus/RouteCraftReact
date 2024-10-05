@@ -40,12 +40,26 @@ function LocationRoutesComp({ locations, directions, setLocations }) {
                   </Draggable>
 
                   {/* Render the direction info below each location if it exists */}
-                  {directions[index] && (
+                  {index < locations.length - 1 && directions[index] && (
                     <div className="direction-info">
                       <span>
                         Dauer:{" "}
-                        {Math.round(directions[index].routes[0].duration / 60)}{" "}
-                        min
+                        {directions[index].routes[0].duration > 3600 ? (
+                          <>
+                            {Math.floor(
+                              directions[index].routes[0].duration / 3600
+                            )}{" "}
+                            h{" "}
+                            {Math.round(
+                              (directions[index].routes[0].duration % 3600) / 60
+                            )}{" "}
+                            min
+                          </>
+                        ) : (
+                          `${Math.round(
+                            directions[index].routes[0].duration / 60
+                          )} min`
+                        )}
                       </span>
                       <span>
                         Strecke:{" "}

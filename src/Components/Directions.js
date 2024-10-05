@@ -5,19 +5,29 @@ import polyline from "@mapbox/polyline"; // Import the polyline decoder
 function DirectionsComponent({ locations, directions, setDirections }) {
   useEffect(() => {
     const len = locations.length;
+    const fetchedRoutes = new Map(); // Store fetched route ids
+
+    // Populate the Map with already fetched route ids (waypoints)
+    directions.forEach((direction) => {
+      fetchedRoutes.set(direction.id, direction); // Add waypoints as key and direction object as value
+    });
 
     if (len > 1) {
-      // Fetch directions for every consecutive pair of locations with rate limiting
       const fetchAllDirectionsWithDelay = async () => {
-        const uniqueLocations = [
-          ...new Set(locations.map((loc) => `${loc.lon},${loc.lat}`)),
-        ];
-
         let newDirections = []; // Store the new directions
 
-        for (let i = 0; i < uniqueLocations.length - 1; i++) {
-          const waypoints = `${uniqueLocations[i]};${uniqueLocations[i + 1]}`;
+        for (let i = 0; i < locations.length - 1; i++) {
+          const waypoints = `${locations[i].lon},${locations[i].lat};${
+            locations[i + 1].lon
+          },${locations[i + 1].lat}`;
 
+          // Check if the route has already been fetched synchronously and add it to directions
+          if (fetchedRoutes.has(waypoints)) {
+            newDirections.push(fetchedRoutes.get(waypoints));
+            continue; // Skip API call
+          }
+
+          // Perform the asynchronous fetch call only when necessary
           try {
             const response = await fetch(
               `https://us1.locationiq.com/v1/directions/driving/${waypoints}?key=${process.env.REACT_APP_LOCATIONIQ_KEY}&steps=true&alternatives=true&geometries=polyline&overview=full`
@@ -25,13 +35,13 @@ function DirectionsComponent({ locations, directions, setDirections }) {
             const json = await response.json();
 
             if (json && json.routes) {
+              json.id = waypoints; // Add a unique id to the json object based on the waypoints
               newDirections.push(json); // Add the new directions to the array
-            } else {
-              console.error("No routes found for", waypoints);
+              fetchedRoutes.set(waypoints, json); // Add the waypoints to the map to avoid future duplicate fetches
             }
 
             // Add a delay of 500ms (2 requests per second)
-            if (i < uniqueLocations.length - 2) {
+            if (i < locations.length - 2) {
               await new Promise((resolve) => setTimeout(resolve, 500));
             }
           } catch (error) {
