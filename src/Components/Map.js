@@ -13,7 +13,7 @@ function ChangeMapView({ coords }) {
   return null;
 }
 
-export default function Map({ locations }) {
+export default function Map({ locations, directions, setDirections }) {
   // custom Icon Styling
   const customIcon = new L.Icon({
     iconUrl: `${process.env.PUBLIC_URL}/assets/location.png`,
@@ -40,7 +40,11 @@ export default function Map({ locations }) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      <DirectionsComponent locations={locations}></DirectionsComponent>
+      <DirectionsComponent
+        locations={locations}
+        directions={directions}
+        setDirections={setDirections}
+      ></DirectionsComponent>
 
       <ChangeMapView
         coords={[

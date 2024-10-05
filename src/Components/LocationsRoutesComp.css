@@ -1,0 +1,9 @@
+.listing-container {
+  display: flex;
+  justify-content: center;
+  align-items: top;
+  width: 20%;
+  background-color: #888;
+  border-bottom-left-radius: 15px;
+  font-family: Arial, sans-serif;
+}

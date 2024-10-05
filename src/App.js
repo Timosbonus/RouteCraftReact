@@ -2,16 +2,19 @@ import "./App.css";
 import { useRef, useState, useEffect } from "react";
 import Map from "./Components/Map";
 import Navbar from "./Components/Navbar";
+import LocationRoutesComp from "./Components/LocationRoutesComp";
 
 function App() {
   const adressInput = useRef(null);
   const [locations, setLocations] = useState([]);
+  const [directions, setDirections] = useState([]); // Array to hold directions
 
+  // Set the starting address and fetch its location only once
   useEffect(() => {
-    // Set the starting address and fetch its location only once
     const startPoint = "Ersigstraße 10a, 76275 Ettlingen";
     setNewAdress(startPoint); // Call the function to set the new address
-  }); // Leeres Abhängigkeits-Array, damit es nur einmal aufgerufen wird
+    // eslint-disable-next-line
+  }, []);
 
   function setNewAdress(inputValue) {
     fetch(
@@ -40,9 +43,20 @@ function App() {
     <div className="App">
       <Navbar adressInput={adressInput} setNewAdress={setNewAdress}></Navbar>
 
-      <div>
+      <div className="map-view-container">
         {locations.length ? (
-          <Map locations={locations} />
+          <>
+            <Map
+              locations={locations}
+              directions={directions}
+              setDirections={setDirections}
+            />
+            <LocationRoutesComp
+              className="locations-routes-comp"
+              locations={locations}
+              directions={directions}
+            />
+          </>
         ) : (
           <p>Loading map...</p>
         )}

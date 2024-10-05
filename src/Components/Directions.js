@@ -1,10 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Polyline } from "react-leaflet";
 import polyline from "@mapbox/polyline"; // Import the polyline decoder
 
-function DirectionsComponent({ locations }) {
-  const [directions, setDirections] = useState([]); // Array to hold directions
-
+function DirectionsComponent({ locations, directions, setDirections }) {
   useEffect(() => {
     const len = locations.length;
     if (len > 1) {
@@ -34,6 +32,7 @@ function DirectionsComponent({ locations }) {
                 ...prevDirections,
                 decodedRoute,
               ]);
+              console.log(decodedRoute);
             } else {
               console.error("No routes found");
             }
@@ -41,6 +40,7 @@ function DirectionsComponent({ locations }) {
           .catch((error) => console.error("Error fetching directions:", error));
       }
     }
+    // eslint-disable-next-line
   }, [locations]); // Re-run when locations change
 
   return (
