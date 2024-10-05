@@ -1,18 +1,68 @@
+import React from "react"; // Import React
 import "./LocationsRoutesComp.css";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
-function LocationRoutesComp({ locations, directions }) {
-  const locationList = locations.map((current, index) => (
-    <button key={index}>{current.display_name}</button>
-  ));
-  /*
-  const directionList = directions.map((current, index) => (
-    <h1>{current.routes[0].duration}</h1>
-  ));
-*/
+function LocationRoutesComp({ locations, directions, setLocations }) {
+  const handleOnDragEnd = (result) => {
+    if (!result.destination) return;
+
+    const items = Array.from(locations);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    setLocations(items); // Update the state with the new order
+  };
+
   return (
     <div className="listing-container">
-      <h1>Hello</h1>
-      <ul>{locationList}</ul>
+      <h2>Current Selected Route</h2>
+      <DragDropContext onDragEnd={handleOnDragEnd}>
+        <Droppable droppableId="locations">
+          {(provided) => (
+            <ul
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              className="location-list"
+            >
+              {locations.map((current, index) => (
+                <React.Fragment key={current.place_id}>
+                  <Draggable draggableId={current.place_id} index={index}>
+                    {(provided) => (
+                      <li
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        className="location-item"
+                      >
+                        {current.display_name}
+                      </li>
+                    )}
+                  </Draggable>
+
+                  {/* Render the direction info below each location if it exists */}
+                  {directions[index] && (
+                    <div className="direction-info">
+                      <span>
+                        Dauer:{" "}
+                        {Math.round(directions[index].routes[0].duration / 60)}{" "}
+                        min
+                      </span>
+                      <span>
+                        Strecke:{" "}
+                        {Math.round(
+                          (directions[index].routes[0].distance / 1000) * 10
+                        ) / 10}{" "}
+                        km
+                      </span>
+                    </div>
+                  )}
+                </React.Fragment>
+              ))}
+              {provided.placeholder} {/* This is important for spacing */}
+            </ul>
+          )}
+        </Droppable>
+      </DragDropContext>
     </div>
   );
 }

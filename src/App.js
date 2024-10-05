@@ -55,6 +55,7 @@ function App() {
               className="locations-routes-comp"
               locations={locations}
               directions={directions}
+              setLocations={setLocations}
             />
           </>
         ) : (

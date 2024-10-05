@@ -32,7 +32,7 @@ function Navbar({ adressInput, setNewAdress }) {
       } else {
         setSuggestions([]); // Clear suggestions if input length is less than 3
       }
-    }, 200);
+    }, 500);
 
     setDebounceTimeout(newTimeout);
   }
