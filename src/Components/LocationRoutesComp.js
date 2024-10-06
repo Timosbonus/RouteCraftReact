@@ -4,15 +4,15 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 function LocationRoutesComp({ locations, directions, setLocations }) {
   const [startTime, setStartTime] = useState("07:00");
-  const [defaultBreakDuration, setDefaultBreakDuration] = useState(20); // in Minuten
-  const [breakDurations, setBreakDurations] = useState([]); // für individuelle Pausen
+  const [defaultBreakDuration, setDefaultBreakDuration] = useState(20); // in minutes
+  const [breakDurations, setBreakDurations] = useState([]); // saves individual breaks
 
-  // Initialisiere die Pausendauern basierend auf der Anzahl der Routen
+  // initializing array to save the break durations
   useEffect(() => {
-    setBreakDurations(Array(directions.length).fill(defaultBreakDuration));
-  }, [directions.length, defaultBreakDuration]);
+    setBreakDurations(Array(locations.length).fill(defaultBreakDuration));
+  }, [locations.length, defaultBreakDuration]);
 
-  // Handhabt die Startzeit
+  // handles start time
   const handleTimeChange = (event) => {
     setStartTime(event.target.value);
   };
@@ -21,7 +21,6 @@ function LocationRoutesComp({ locations, directions, setLocations }) {
     const newDefaultBreak = Number(event.target.value);
     setDefaultBreakDuration(newDefaultBreak);
 
-    // Aktualisiere alle Pausendauern auf den neuen Standardwert
     const updatedBreaks = breakDurations.map(() => newDefaultBreak);
     setBreakDurations(updatedBreaks);
   };
@@ -33,31 +32,40 @@ function LocationRoutesComp({ locations, directions, setLocations }) {
   };
 
   const calculateArrivalTime = (index) => {
-    if (index === 0) return ""; // Keine Ankunftszeit für die erste Adresse
+    if (index === 0) return ""; // no arrival time for first address
 
     const startDate = new Date();
     const [hours, minutes] = startTime.split(":").map(Number);
     startDate.setHours(hours);
     startDate.setMinutes(minutes);
 
-    // Berechne die gesamte Fahrtdauer bis zur aktuellen Position
+    // calculate the total travel duration to the current position
     const totalDuration = directions
       .slice(0, index)
       .reduce((acc, dir) => acc + dir.routes[0].duration, 0);
 
-    // Berechne die Ankunftszeit ohne Pausen
-    const arrivalDate = new Date(startDate.getTime() + totalDuration * 1000);
+    // calculate the total break duration to the current position
+    const totalBreakDuration = breakDurations
+      .slice(1, index)
+      .reduce((acc, breakDuration) => acc + breakDuration, 0);
 
-    return arrivalDate; // Rückgabe als Datum
+    // calculate the arrival time considering the breaks
+    const arrivalDate = new Date(
+      startDate.getTime() +
+        totalDuration * 1000 +
+        totalBreakDuration * 60 * 1000
+    );
+
+    return arrivalDate; // return as date
   };
 
   const calculateDepartureTime = (index) => {
-    if (index === 0) return startTime; // Bei der ersten Adresse ist es die Startzeit
+    if (index === 0) return startTime; // for the first address, it's the start time
 
     const arrivalDate = calculateArrivalTime(index);
     if (!arrivalDate) return "";
 
-    const breakDuration = breakDurations[index] || defaultBreakDuration; // Holen Sie sich die Pausendauer
+    const breakDuration = breakDurations[index] || defaultBreakDuration; // get the break duration
     const departureDate = new Date(
       arrivalDate.getTime() + breakDuration * 60 * 1000
     );
@@ -65,7 +73,7 @@ function LocationRoutesComp({ locations, directions, setLocations }) {
     return departureDate.toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
-    }); // Formatieren als HH:MM
+    }); // format as HH:MM
   };
 
   const handleOnDragEnd = (result) => {
@@ -75,15 +83,16 @@ function LocationRoutesComp({ locations, directions, setLocations }) {
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
 
-    setLocations(items); // Aktualisiere den Status mit der neuen Reihenfolge
-    setBreakDurations(Array(items.length).fill(defaultBreakDuration)); // Setze Pausendauern auf Standard zurück beim Neuanordnen
+    setLocations(items); // update state with the new order
+    // Keep previous break durations
+    // setBreakDurations(Array(items.length).fill(defaultBreakDuration));
   };
 
   return (
     <div className="listing-container">
-      <h2>Aktuelle Route</h2>
+      <h2>Current Route</h2>
       <div className="time-input-container">
-        <label htmlFor="appt">Abfahrtszeit</label>
+        <label htmlFor="appt">Departure Time</label>
         <input
           type="time"
           onChange={handleTimeChange}
@@ -92,13 +101,13 @@ function LocationRoutesComp({ locations, directions, setLocations }) {
         />
       </div>
       <div className="time-input-container">
-        <label htmlFor="defaultBreak">Standard Pause (Minuten)</label>
+        <label htmlFor="defaultBreak">Default Break (Minutes)</label>
         <input
           type="number"
           onChange={handleDefaultBreakChange}
           value={defaultBreakDuration}
           className="break-duration"
-          placeholder="Standard Pause"
+          placeholder="Default Break"
         />
       </div>
 
@@ -122,7 +131,7 @@ function LocationRoutesComp({ locations, directions, setLocations }) {
                       >
                         {index > 0 && (
                           <div className="arrival-time">
-                            Ankunft:{" "}
+                            Arrival:{" "}
                             {calculateArrivalTime(index).toLocaleTimeString(
                               [],
                               {
@@ -131,7 +140,7 @@ function LocationRoutesComp({ locations, directions, setLocations }) {
                               }
                             )}
                             <span className="departure-time-display">
-                              Abfahrt: {calculateDepartureTime(index)}
+                              Departure: {calculateDepartureTime(index)}
                             </span>
                             <input
                               type="number"
@@ -140,7 +149,7 @@ function LocationRoutesComp({ locations, directions, setLocations }) {
                                 handleBreakDurationChange(index, event)
                               }
                               className="break-duration"
-                              placeholder="Pause (Min)"
+                              placeholder="Break (Min)"
                             />
                           </div>
                         )}
@@ -153,7 +162,7 @@ function LocationRoutesComp({ locations, directions, setLocations }) {
                   {index < locations.length - 1 && directions[index] && (
                     <div className="direction-info">
                       <span>
-                        Dauer:{" "}
+                        Duration:{" "}
                         {directions[index].routes[0].duration > 3600 ? (
                           <>
                             {Math.floor(
@@ -172,7 +181,7 @@ function LocationRoutesComp({ locations, directions, setLocations }) {
                         )}
                       </span>
                       <span>
-                        Strecke:{" "}
+                        Distance:{" "}
                         {Math.round(
                           (directions[index].routes[0].distance / 1000) * 10
                         ) / 10}{" "}
