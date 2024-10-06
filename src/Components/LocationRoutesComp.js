@@ -1,8 +1,73 @@
-import React from "react"; // Import React
+import React, { useState, useEffect } from "react";
 import "./LocationsRoutesComp.css";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 function LocationRoutesComp({ locations, directions, setLocations }) {
+  const [startTime, setStartTime] = useState("07:00");
+  const [defaultBreakDuration, setDefaultBreakDuration] = useState(20); // in Minuten
+  const [breakDurations, setBreakDurations] = useState([]); // für individuelle Pausen
+
+  // Initialisiere die Pausendauern basierend auf der Anzahl der Routen
+  useEffect(() => {
+    setBreakDurations(Array(directions.length).fill(defaultBreakDuration));
+  }, [directions.length, defaultBreakDuration]);
+
+  // Handhabt die Startzeit
+  const handleTimeChange = (event) => {
+    setStartTime(event.target.value);
+  };
+
+  const handleDefaultBreakChange = (event) => {
+    const newDefaultBreak = Number(event.target.value);
+    setDefaultBreakDuration(newDefaultBreak);
+
+    // Aktualisiere alle Pausendauern auf den neuen Standardwert
+    const updatedBreaks = breakDurations.map(() => newDefaultBreak);
+    setBreakDurations(updatedBreaks);
+  };
+
+  const handleBreakDurationChange = (index, event) => {
+    const newBreaks = [...breakDurations];
+    newBreaks[index] = Number(event.target.value);
+    setBreakDurations(newBreaks);
+  };
+
+  const calculateArrivalTime = (index) => {
+    if (index === 0) return ""; // Keine Ankunftszeit für die erste Adresse
+
+    const startDate = new Date();
+    const [hours, minutes] = startTime.split(":").map(Number);
+    startDate.setHours(hours);
+    startDate.setMinutes(minutes);
+
+    // Berechne die gesamte Fahrtdauer bis zur aktuellen Position
+    const totalDuration = directions
+      .slice(0, index)
+      .reduce((acc, dir) => acc + dir.routes[0].duration, 0);
+
+    // Berechne die Ankunftszeit ohne Pausen
+    const arrivalDate = new Date(startDate.getTime() + totalDuration * 1000);
+
+    return arrivalDate; // Rückgabe als Datum
+  };
+
+  const calculateDepartureTime = (index) => {
+    if (index === 0) return startTime; // Bei der ersten Adresse ist es die Startzeit
+
+    const arrivalDate = calculateArrivalTime(index);
+    if (!arrivalDate) return "";
+
+    const breakDuration = breakDurations[index] || defaultBreakDuration; // Holen Sie sich die Pausendauer
+    const departureDate = new Date(
+      arrivalDate.getTime() + breakDuration * 60 * 1000
+    );
+
+    return departureDate.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    }); // Formatieren als HH:MM
+  };
+
   const handleOnDragEnd = (result) => {
     if (!result.destination) return;
 
@@ -10,12 +75,33 @@ function LocationRoutesComp({ locations, directions, setLocations }) {
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
 
-    setLocations(items); // Update the state with the new order
+    setLocations(items); // Aktualisiere den Status mit der neuen Reihenfolge
+    setBreakDurations(Array(items.length).fill(defaultBreakDuration)); // Setze Pausendauern auf Standard zurück beim Neuanordnen
   };
 
   return (
     <div className="listing-container">
-      <h2>Current Selected Route</h2>
+      <h2>Aktuelle Route</h2>
+      <div className="time-input-container">
+        <label htmlFor="appt">Abfahrtszeit</label>
+        <input
+          type="time"
+          onChange={handleTimeChange}
+          value={startTime}
+          className="departure-time"
+        />
+      </div>
+      <div className="time-input-container">
+        <label htmlFor="defaultBreak">Standard Pause (Minuten)</label>
+        <input
+          type="number"
+          onChange={handleDefaultBreakChange}
+          value={defaultBreakDuration}
+          className="break-duration"
+          placeholder="Standard Pause"
+        />
+      </div>
+
       <DragDropContext onDragEnd={handleOnDragEnd}>
         <Droppable droppableId="locations">
           {(provided) => (
@@ -34,6 +120,30 @@ function LocationRoutesComp({ locations, directions, setLocations }) {
                         {...provided.dragHandleProps}
                         className="location-item"
                       >
+                        {index > 0 && (
+                          <div className="arrival-time">
+                            Ankunft:{" "}
+                            {calculateArrivalTime(index).toLocaleTimeString(
+                              [],
+                              {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              }
+                            )}
+                            <span className="departure-time-display">
+                              Abfahrt: {calculateDepartureTime(index)}
+                            </span>
+                            <input
+                              type="number"
+                              value={breakDurations[index]}
+                              onChange={(event) =>
+                                handleBreakDurationChange(index, event)
+                              }
+                              className="break-duration"
+                              placeholder="Pause (Min)"
+                            />
+                          </div>
+                        )}
                         {current.display_name}
                       </li>
                     )}

@@ -11,49 +11,42 @@
   overflow-y: auto;
 }
 
-.location-list {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  width: 100%;
-}
-
-.location-item {
+.time-input-container {
   display: flex;
-  flex-direction: column;
-  background-color: #f6faf3;
-  margin: 10px 0;
-  padding: 10px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.direction-info {
-  display: flex;
-  justify-content: center; /* Center the items horizontally */
-  align-items: center; /* Center the items vertically */
-  margin-top: 2px;
-  font-size: 0.9em;
-  color: #333;
-  opacity: 70%;
-  background-color: #f8f8f8;
-  padding: 5px;
-  border-radius: 5px;
-  gap: 20px;
-}
-
-.listing-container {
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  width: 20%;
-  height: 92.4vh - 50px;
-  background-color: #888;
-  border-bottom-left-radius: 15px;
-  padding: 10px;
-  font-family: Arial, sans-serif;
-  overflow-y: auto;
-  
+  margin-bottom: 20px;
+}
+
+.departure-time {
+  font-size: large;
+  border: 1px solid #4caf50;
+  border-radius: 5px;
+  padding: 8px;
+  margin-left: 10px;
+  background-color: #e8f5e9;
+  color: #333;
+  width: 100%;
+  transition: border-color 0.3s;
+}
+
+.departure-time-display {
+  margin-left: 10px;
+  font-weight: bold;
+}
+
+.departure-time:focus {
+  outline: none;
+  border-color: #388e3c;
+}
+
+.arrival-time {
+  font-size: 1em;
+  font-weight: bold;
+  color: #ffffff;
+  background-color: #28a745;
+  padding: 5px;
+  border-radius: 5px;
+  margin-bottom: 5px;
 }
 
 .location-list {
@@ -75,8 +68,8 @@
 
 .direction-info {
   display: flex;
-  justify-content: center; /* Center the items horizontally */
-  align-items: center; /* Center the items vertically */
+  justify-content: center;
+  align-items: center;
   margin-top: 2px;
   font-size: 0.9em;
   color: #333;
@@ -87,4 +80,18 @@
   gap: 20px;
 }
 
+.break-duration {
+  width: 60px;
+  margin-left: 10px;
+  padding: 5px;
+  border: 1px solid #4caf50;
+  border-radius: 5px;
+  background-color: #e8f5e9;
+  color: #333;
+  transition: border-color 0.3s;
+}
 
+.break-duration:focus {
+  outline: none;
+  border-color: #388e3c;
+}
