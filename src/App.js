@@ -8,6 +8,7 @@ function App() {
   const adressInput = useRef(null);
   const [locations, setLocations] = useState([]);
   const [directions, setDirections] = useState([]); // Array to hold directions
+  const [defaultBreakDuration, setDefaultBreakDuration] = useState(20); // in minutes
 
   // Set the starting address and fetch its location only once
   useEffect(() => {
@@ -28,10 +29,16 @@ function App() {
         if (json && json.length > 0) {
           const newLocation = json[0];
 
-          // Überprüfen, ob die neue Position bereits existiert
+          // check if position already exists
           const exists = locations.some((loc) => loc.lon === newLocation.lon);
 
           if (!exists) {
+            // only set breakDuration for the locations after the first one
+            if (locations.length > 0) {
+              newLocation.breakDuration = defaultBreakDuration;
+            } else {
+              newLocation.breakDuration = 0;
+            }
             setLocations((prevLocations) => [...prevLocations, newLocation]);
           }
         }
@@ -56,6 +63,8 @@ function App() {
               locations={locations}
               directions={directions}
               setLocations={setLocations}
+              defaultBreakDuration={defaultBreakDuration}
+              setDefaultBreakDuration={setDefaultBreakDuration}
             />
           </>
         ) : (

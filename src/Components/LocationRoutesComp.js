@@ -1,16 +1,31 @@
 import React, { useState, useEffect } from "react";
-import "./LocationsRoutesComp.css";
+import { usePrevious } from "@uidotdev/usehooks";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import "./LocationsRoutesComp.css";
 
-function LocationRoutesComp({ locations, directions, setLocations }) {
-  const [startTime, setStartTime] = useState("07:00");
-  const [defaultBreakDuration, setDefaultBreakDuration] = useState(20); // in minutes
-  const [breakDurations, setBreakDurations] = useState([]); // saves individual breaks
+function LocationRoutesComp({
+  locations,
+  directions,
+  setLocations,
+  defaultBreakDuration,
+  setDefaultBreakDuration,
+}) {
+  const [startTime, setStartTime] = useState("07:00"); // standard start time
+  const previousDefaultBreak = usePrevious(defaultBreakDuration);
 
-  // initializing array to save the break durations
+  // save break durations in locations array
   useEffect(() => {
-    setBreakDurations(Array(locations.length).fill(defaultBreakDuration));
-  }, [locations.length, defaultBreakDuration]);
+    for (let i = 1; i < locations.length; i++) {
+      const current = locations[i].breakDuration;
+
+      // Only update the break if it's set to the previous default break
+      if (current === previousDefaultBreak) {
+        locations[i].breakDuration = defaultBreakDuration;
+      }
+    }
+    setLocations([...locations]); // Trigger a re-render with updated break durations
+    // eslint-disable-next-line
+  }, [defaultBreakDuration]);
 
   // handles start time
   const handleTimeChange = (event) => {
@@ -20,15 +35,6 @@ function LocationRoutesComp({ locations, directions, setLocations }) {
   const handleDefaultBreakChange = (event) => {
     const newDefaultBreak = Number(event.target.value);
     setDefaultBreakDuration(newDefaultBreak);
-
-    const updatedBreaks = breakDurations.map(() => newDefaultBreak);
-    setBreakDurations(updatedBreaks);
-  };
-
-  const handleBreakDurationChange = (index, event) => {
-    const newBreaks = [...breakDurations];
-    newBreaks[index] = Number(event.target.value);
-    setBreakDurations(newBreaks);
   };
 
   const calculateArrivalTime = (index) => {
@@ -45,9 +51,10 @@ function LocationRoutesComp({ locations, directions, setLocations }) {
       .reduce((acc, dir) => acc + dir.routes[0].duration, 0);
 
     // calculate the total break duration to the current position
-    const totalBreakDuration = breakDurations
-      .slice(1, index)
-      .reduce((acc, breakDuration) => acc + breakDuration, 0);
+    let totalBreakDuration = 0;
+    for (let i = 0; i < index; i++) {
+      totalBreakDuration += locations[i].breakDuration;
+    }
 
     // calculate the arrival time considering the breaks
     const arrivalDate = new Date(
@@ -65,7 +72,7 @@ function LocationRoutesComp({ locations, directions, setLocations }) {
     const arrivalDate = calculateArrivalTime(index);
     if (!arrivalDate) return "";
 
-    const breakDuration = breakDurations[index] || defaultBreakDuration; // get the break duration
+    const breakDuration = locations[index].breakDuration; // get the break duration
     const departureDate = new Date(
       arrivalDate.getTime() + breakDuration * 60 * 1000
     );
@@ -84,9 +91,15 @@ function LocationRoutesComp({ locations, directions, setLocations }) {
     items.splice(result.destination.index, 0, reorderedItem);
 
     setLocations(items); // update state with the new order
-    // Keep previous break durations
-    // setBreakDurations(Array(items.length).fill(defaultBreakDuration));
   };
+
+  function displayUntilThirdComma(str) {
+    const parts = str.split(","); // Split the string at commas
+    if (parts.length < 3) {
+      return str; // Return the whole string if there are fewer than 3 commas
+    }
+    return parts.slice(0, 3).join(","); // Join the first 3 parts with commas
+  }
 
   return (
     <div className="listing-container">
@@ -138,22 +151,31 @@ function LocationRoutesComp({ locations, directions, setLocations }) {
                                 hour: "2-digit",
                                 minute: "2-digit",
                               }
-                            )}
+                            )}{" "}
+                            |
                             <span className="departure-time-display">
-                              Departure: {calculateDepartureTime(index)}
+                              Departure: {calculateDepartureTime(index)} |
+                            </span>
+                            <span className="departure-time-display">
+                              Break:
                             </span>
                             <input
                               type="number"
-                              value={breakDurations[index]}
-                              onChange={(event) =>
-                                handleBreakDurationChange(index, event)
-                              }
+                              value={locations[index].breakDuration}
                               className="break-duration"
                               placeholder="Break (Min)"
+                              onChange={(e) => {
+                                const updatedLocations = [...locations];
+                                updatedLocations[index].breakDuration = Number(
+                                  e.target.value
+                                );
+                                setLocations(updatedLocations);
+                              }}
                             />
                           </div>
                         )}
-                        {current.display_name}
+
+                        {displayUntilThirdComma(current.display_name)}
                       </li>
                     )}
                   </Draggable>
