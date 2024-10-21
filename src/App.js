@@ -3,19 +3,47 @@ import { useRef, useState, useEffect } from "react";
 import Map from "./Components/Map";
 import Navbar from "./Components/Navbar";
 import LocationRoutesComp from "./Components/LocationRoutesComp";
+import {
+  updateSaveDeleteLocations,
+  getAllLocations,
+} from "./Components/backendConfig";
 
 function App() {
   const adressInput = useRef(null);
-  const [locations, setLocations] = useState([]);
+  const [routeId, setRouteId] = useState("route123"); // routeId for database access
+  const [locations, setLocations] = useState([]); // Array to hold locations
   const [directions, setDirections] = useState([]); // Array to hold directions
   const [defaultBreakDuration, setDefaultBreakDuration] = useState(20); // in minutes
 
-  // Set the starting address and fetch its location only once
   useEffect(() => {
-    const startPoint = "Ersigstraße 10a, 76275 Ettlingen";
-    setNewAdress(startPoint); // Call the function to set the new address
-    // eslint-disable-next-line
-  }, []);
+    // useEffect to check the locations with specific routeId
+    if (routeId) {
+      getAllLocations(routeId)
+        .then((newLocations) => {
+          if (newLocations.length === 0) {
+            // if there are no locations, sets start point
+            const startPoint = "Ersigstraße 10a, 76275 Ettlingen";
+            setNewAdress(startPoint);
+          }
+          setLocations(newLocations);
+        })
+        .catch((error) => {
+          console.error("Error loading locations: ", error);
+        });
+    }
+  }, [routeId]);
+
+  function handleSetNewAdress(newLocation) {
+    const updatedLocations = [...locations, newLocation];
+
+    updateSaveDeleteLocations(updatedLocations, routeId) // axios method to get data from Backend
+      .then((newLocations) => {
+        setLocations(newLocations); // Takes data from api to set array
+      })
+      .catch((error) => {
+        console.error("Error updating locations: ", error);
+      });
+  }
 
   function setNewAdress(inputValue) {
     fetch(
@@ -33,13 +61,10 @@ function App() {
           const exists = locations.some((loc) => loc.lon === newLocation.lon);
 
           if (!exists) {
-            // only set breakDuration for the locations after the first one
-            if (locations.length > 0) {
-              newLocation.breakDuration = defaultBreakDuration;
-            } else {
-              newLocation.breakDuration = 0;
-            }
-            setLocations((prevLocations) => [...prevLocations, newLocation]);
+            // sets json data for breakDuration and the routeId
+            newLocation.breakDuration = defaultBreakDuration;
+            newLocation.routeId = routeId;
+            handleSetNewAdress(newLocation);
           }
         }
       })
@@ -48,7 +73,6 @@ function App() {
 
   return (
     <div className="overview_container">
-
       <Navbar adressInput={adressInput} setNewAdress={setNewAdress}></Navbar>
 
       <div className="map_locations_container">

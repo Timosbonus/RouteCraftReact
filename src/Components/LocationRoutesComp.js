@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { usePrevious } from "@uidotdev/usehooks";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+
+import { updateSaveDeleteLocations } from "./backendConfig";
+
 import "./LocationsRoutesComp.css";
 
 function LocationRoutesComp({
@@ -11,11 +14,11 @@ function LocationRoutesComp({
   setDefaultBreakDuration,
 }) {
   const [startTime, setStartTime] = useState("07:00"); // standard start time
-  const previousDefaultBreak = usePrevious(defaultBreakDuration);  
+  const previousDefaultBreak = usePrevious(defaultBreakDuration);
 
   // save break durations in locations array
   useEffect(() => {
-    for (let i = 1; i < locations.length; i++) {
+    for (let i = 0; i < locations.length; i++) {
       const current = locations[i].breakDuration;
 
       // Only update the break if it's set to the previous default break
@@ -52,7 +55,8 @@ function LocationRoutesComp({
 
     // calculate the total break duration to the current position
     let totalBreakDuration = 0;
-    for (let i = 0; i < index; i++) {
+    for (let i = 1; i < index; i++) {
+      // start at index 1 to ignore first breakDuration
       totalBreakDuration += locations[i].breakDuration;
     }
 
@@ -86,11 +90,20 @@ function LocationRoutesComp({
   const handleOnDragEnd = (result) => {
     if (!result.destination) return;
 
-    const items = Array.from(locations);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
 
-    setLocations(items); // update state with the new order
+
+    // drag and drop does not work with backend loading and sometimes not every direction is loading...
+
+    updateSaveDeleteLocations(locations, "route123") // axios method to get data from Backend
+      .then((newLocations) => {
+        const items = Array.from(newLocations);
+        const [reorderedItem] = items.splice(result.source.index, 1);
+        items.splice(result.destination.index, 0, reorderedItem);
+        setLocations(items); // Takes data from api to set array
+      })
+      .catch((error) => {
+        console.error("Error updating locations: ", error);
+      }); // update state with the new order
   };
 
   function displayUntilThirdComma(str) {
