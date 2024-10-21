@@ -1,9 +1,8 @@
 .listing-container {
   display: flex;
+  flex: 1;
   flex-direction: column;
   align-items: center;
-  width: 20%;
-  height: calc(92.4vh - 20px);
   background-color: #888;
   border-bottom-left-radius: 15px;
   padding: 10px;

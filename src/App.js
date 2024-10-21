@@ -47,10 +47,11 @@ function App() {
   }
 
   return (
-    <div className="App">
+    <div className="overview_container">
+
       <Navbar adressInput={adressInput} setNewAdress={setNewAdress}></Navbar>
 
-      <div className="map-view-container">
+      <div className="map_locations_container">
         {locations.length ? (
           <>
             <Map

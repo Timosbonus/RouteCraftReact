@@ -11,7 +11,7 @@ function LocationRoutesComp({
   setDefaultBreakDuration,
 }) {
   const [startTime, setStartTime] = useState("07:00"); // standard start time
-  const previousDefaultBreak = usePrevious(defaultBreakDuration);
+  const previousDefaultBreak = usePrevious(defaultBreakDuration);  
 
   // save break durations in locations array
   useEffect(() => {
