@@ -64,6 +64,7 @@ function App() {
             // sets json data for breakDuration and the routeId
             newLocation.breakDuration = defaultBreakDuration;
             newLocation.routeId = routeId;
+            newLocation.current_index = locations.length; // adds new current index to sort later
             handleSetNewAdress(newLocation);
           }
         }

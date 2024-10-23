@@ -12,14 +12,16 @@ export const getAllLocations = async (routeId) => {
         },
       }
     );
-    return response.data; // method returns array of locations 
+    const arr = response.data.sort((a, b) => a.current_index - b.current_index);
+    return arr; // method returns array of locations
   } catch (error) {
     console.error("Error: ", error);
     throw error;
   }
 };
 
-export const updateSaveDeleteLocations = async (locations, routeId) => { // takes route id and current locations Array
+export const updateSaveDeleteLocations = async (locations, routeId) => {
+  // takes route id and current locations Array
   try {
     const response = await axios.put(
       `${API_BACKEND}/locations/${routeId}`, // uses put method to send data
@@ -30,7 +32,8 @@ export const updateSaveDeleteLocations = async (locations, routeId) => { // take
         },
       }
     );
-    return response.data; // takes response with ids, and uses them just update them later
+    const arr = response.data.sort((a, b) => a.current_index - b.current_index);
+    return arr; // takes response with ids, and uses them just update them later
   } catch (error) {
     console.error("Error: ", error);
     throw error;

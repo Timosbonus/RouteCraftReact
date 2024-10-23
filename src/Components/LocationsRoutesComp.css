@@ -94,3 +94,21 @@
   outline: none;
   border-color: #388e3c;
 }
+
+.delete-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.delete-button:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+}
+
+.delete-button-img {
+  width: 20px;
+  height: 20px;
+}

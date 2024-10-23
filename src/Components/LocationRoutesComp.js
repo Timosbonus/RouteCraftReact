@@ -90,20 +90,41 @@ function LocationRoutesComp({
   const handleOnDragEnd = (result) => {
     if (!result.destination) return;
 
+    const items = Array.from(locations);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
 
+    // Update current_index for each location based on new order
+    items.forEach((item, index) => {
+      item.current_index = index; // Update current_index
+    });
 
-    // drag and drop does not work with backend loading and sometimes not every direction is loading...
+    setLocations(items);
 
-    updateSaveDeleteLocations(locations, "route123") // axios method to get data from Backend
+    updateSaveDeleteLocations(items, "route123") // axios method to get data from Backend
       .then((newLocations) => {
-        const items = Array.from(newLocations);
-        const [reorderedItem] = items.splice(result.source.index, 1);
-        items.splice(result.destination.index, 0, reorderedItem);
-        setLocations(items); // Takes data from api to set array
+        console.log(newLocations);
+        setLocations(newLocations); // Takes data from api to set array
       })
       .catch((error) => {
         console.error("Error updating locations: ", error);
       }); // update state with the new order
+  };
+
+  const handleDeleteLocation = (index) => {
+    const updatedLocations = locations.filter((_, i) => i !== index);
+    setLocations(updatedLocations);
+
+    // API-Aufruf zum Löschen der Location, z.B.:
+    // deleteLocationAPI(current.place_id)
+    updateSaveDeleteLocations(updatedLocations, "route123")
+      .then((newLocations) => {
+        console.log(newLocations);
+        setLocations(newLocations); // Update den Zustand mit der Antwort von der API
+      })
+      .catch((error) => {
+        console.error("Error deleting location: ", error);
+      });
   };
 
   function displayUntilThirdComma(str) {
@@ -185,6 +206,16 @@ function LocationRoutesComp({
                                 setLocations(updatedLocations);
                               }}
                             />
+                            <button
+                              onClick={() => handleDeleteLocation(index)}
+                              className="delete-button"
+                            >
+                              <img
+                                className="delete-button-img"
+                                src="./assets/close.png"
+                                alt="Delete"
+                              />
+                            </button>
                           </div>
                         )}
 
