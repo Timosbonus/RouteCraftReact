@@ -13,7 +13,7 @@ function ChangeMapView({ coords }) {
   return null;
 }
 
-export default function Map({ locations, directions, setDirections }) {
+export default function Map({ locations, directions, setDirections, routeId }) {
   // custom Icon Styling
   const customIcon = new L.Icon({
     iconUrl: `${process.env.PUBLIC_URL}/assets/location.png`,
@@ -44,6 +44,7 @@ export default function Map({ locations, directions, setDirections }) {
         locations={locations}
         directions={directions}
         setDirections={setDirections}
+        routeId={routeId}
       ></DirectionsComponent>
 
       <ChangeMapView

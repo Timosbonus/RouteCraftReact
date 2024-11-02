@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 import { Polyline } from "react-leaflet";
 import polyline from "@mapbox/polyline"; // Import the polyline decoder
+import { updateSaveDeleteDirections } from "./backendConfig";
 
-function DirectionsComponent({ locations, directions, setDirections }) {
+function DirectionsComponent({ locations, directions, setDirections, routeId }) {
   useEffect(() => {
     const len = locations.length;
     const fetchedRoutes = new Map(); // Store fetched route ids
@@ -23,7 +24,9 @@ function DirectionsComponent({ locations, directions, setDirections }) {
 
           // Check if the route has already been fetched synchronously and add it to directions
           if (fetchedRoutes.has(waypoints)) {
-            newDirections.push(fetchedRoutes.get(waypoints));
+            let existingDirection = fetchedRoutes.get(waypoints);
+            existingDirection.currentIndex = i;
+            newDirections.push(existingDirection);
             continue; // Skip API call
           }
 
@@ -37,8 +40,10 @@ function DirectionsComponent({ locations, directions, setDirections }) {
             if (json && json.routes) {
               json.locationConnection = waypoints; // Add a unique locationConnection to the json object based on the waypoints
               json.geometry = json.routes[0].geometry;
-
-              console.log(json);
+              json.routeId = routeId;
+              json.currentIndex = i;
+              json.duration = json.routes[0].duration;
+              json.distance = json.routes[0].distance;
 
               newDirections.push(json); // Add the new directions to the array
               fetchedRoutes.set(waypoints, json); // Add the waypoints to the map to avoid future duplicate fetches
@@ -54,7 +59,11 @@ function DirectionsComponent({ locations, directions, setDirections }) {
         }
 
         // Once all directions are fetched, update the state
-        setDirections(newDirections);
+          updateSaveDeleteDirections(newDirections, routeId)
+            .then((fetchedDirections) => {
+              setDirections(fetchedDirections);
+            })
+
       };
 
       fetchAllDirectionsWithDelay(); // Call the function to fetch all directions with delay

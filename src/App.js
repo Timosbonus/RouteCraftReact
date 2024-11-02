@@ -90,6 +90,7 @@ function App() {
               locations={locations}
               directions={directions}
               setDirections={setDirections}
+              routeId={routeId}
             />
             <LocationRoutesComp
               className="locations-routes-comp"

@@ -51,7 +51,7 @@ function LocationRoutesComp({
     // calculate the total travel duration to the current position
     const totalDuration = directions
       .slice(0, index)
-      .reduce((acc, dir) => acc + dir.routes[0].duration, 0);
+      .reduce((acc, dir) => acc + dir.duration, 0);
 
     // calculate the total break duration to the current position
     let totalBreakDuration = 0;
@@ -103,7 +103,6 @@ function LocationRoutesComp({
 
     updateSaveDeleteLocations(items, "route123") // axios method to get data from Backend
       .then((newLocations) => {
-        console.log(newLocations);
         setLocations(newLocations); // Takes data from api to set array
       })
       .catch((error) => {
@@ -119,7 +118,6 @@ function LocationRoutesComp({
     // deleteLocationAPI(current.place_id)
     updateSaveDeleteLocations(updatedLocations, "route123")
       .then((newLocations) => {
-        console.log(newLocations);
         setLocations(newLocations); // Update den Zustand mit der Antwort von der API
       })
       .catch((error) => {
@@ -229,27 +227,27 @@ function LocationRoutesComp({
                     <div className="direction-info">
                       <span>
                         Duration:{" "}
-                        {directions[index].routes[0].duration > 3600 ? (
+                        {directions[index].duration > 3600 ? (
                           <>
                             {Math.floor(
-                              directions[index].routes[0].duration / 3600
+                              directions[index].duration / 3600
                             )}{" "}
                             h{" "}
                             {Math.round(
-                              (directions[index].routes[0].duration % 3600) / 60
+                              (directions[index].duration % 3600) / 60
                             )}{" "}
                             min
                           </>
                         ) : (
                           `${Math.round(
-                            directions[index].routes[0].duration / 60
+                            directions[index].duration / 60
                           )} min`
                         )}
                       </span>
                       <span>
                         Distance:{" "}
                         {Math.round(
-                          (directions[index].routes[0].distance / 1000) * 10
+                          (directions[index].distance / 1000) * 10
                         ) / 10}{" "}
                         km
                       </span>
