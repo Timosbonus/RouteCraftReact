@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 import { usePrevious } from "@uidotdev/usehooks";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
-import { updateSaveDeleteLocations } from "./backendConfig";
+import {
+  updateSaveDeleteDirections,
+  updateSaveDeleteLocations,
+} from "./backendConfig";
 
 import "./LocationsRoutesComp.css";
 
@@ -12,6 +15,8 @@ function LocationRoutesComp({
   setLocations,
   defaultBreakDuration,
   setDefaultBreakDuration,
+  routeId,
+  setDirections,
 }) {
   const [startTime, setStartTime] = useState("07:00"); // standard start time
   const previousDefaultBreak = usePrevious(defaultBreakDuration);
@@ -111,17 +116,34 @@ function LocationRoutesComp({
   };
 
   const handleDeleteLocation = (index) => {
+    // Get the current location to be deleted
+    const currentLocation = locations[index];
+
+    // Update the locations by removing the selected one
     const updatedLocations = locations.filter((_, i) => i !== index);
     setLocations(updatedLocations);
 
-    // API-Aufruf zum Löschen der Location, z.B.:
-    // deleteLocationAPI(current.place_id)
-    updateSaveDeleteLocations(updatedLocations, "route123")
+    // Update locations in the API
+    updateSaveDeleteLocations(updatedLocations, routeId)
       .then((newLocations) => {
-        setLocations(newLocations); // Update den Zustand mit der Antwort von der API
+        setLocations(newLocations); // Update with API information
       })
       .catch((error) => {
         console.error("Error deleting location: ", error);
+      });
+
+    // Use the index to delete the matching direction
+    const updatedDirections = directions.filter(
+      (direction) => direction.currentIndex !== currentLocation.currentIndex
+    );
+
+    // Update directions in the API
+    updateSaveDeleteDirections(updatedDirections, routeId)
+      .then((newDirections) => {
+        setDirections(newDirections);
+      })
+      .catch((error) => {
+        console.error("Error deleting direction: ", error);
       });
   };
 
@@ -229,26 +251,20 @@ function LocationRoutesComp({
                         Duration:{" "}
                         {directions[index].duration > 3600 ? (
                           <>
-                            {Math.floor(
-                              directions[index].duration / 3600
-                            )}{" "}
-                            h{" "}
+                            {Math.floor(directions[index].duration / 3600)} h{" "}
                             {Math.round(
                               (directions[index].duration % 3600) / 60
                             )}{" "}
                             min
                           </>
                         ) : (
-                          `${Math.round(
-                            directions[index].duration / 60
-                          )} min`
+                          `${Math.round(directions[index].duration / 60)} min`
                         )}
                       </span>
                       <span>
                         Distance:{" "}
-                        {Math.round(
-                          (directions[index].distance / 1000) * 10
-                        ) / 10}{" "}
+                        {Math.round((directions[index].distance / 1000) * 10) /
+                          10}{" "}
                         km
                       </span>
                     </div>

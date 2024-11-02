@@ -32,11 +32,10 @@ function App() {
           console.error("Error loading locations: ", error);
         });
 
-        // calls the same api to get all the direction data
-      getAllDirections(routeId)
-        .then((newDirections) => {
-          setDirections(newDirections);
-        })
+      // calls the same api to get all the direction data
+      getAllDirections(routeId).then((newDirections) => {
+        setDirections(newDirections);
+      });
     }
   }, [routeId]);
 
@@ -99,6 +98,8 @@ function App() {
               setLocations={setLocations}
               defaultBreakDuration={defaultBreakDuration}
               setDefaultBreakDuration={setDefaultBreakDuration}
+              routeId={routeId}
+              setDirections={setDirections}
             />
           </>
         ) : (
