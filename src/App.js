@@ -6,6 +6,7 @@ import LocationRoutesComp from "./Components/LocationRoutesComp";
 import {
   updateSaveDeleteLocations,
   getAllLocations,
+  getAllDirections,
 } from "./Components/backendConfig";
 
 function App() {
@@ -30,6 +31,12 @@ function App() {
         .catch((error) => {
           console.error("Error loading locations: ", error);
         });
+
+        // calls the same api to get all the direction data
+      getAllDirections(routeId)
+        .then((newDirections) => {
+          setDirections(newDirections);
+        })
     }
   }, [routeId]);
 
