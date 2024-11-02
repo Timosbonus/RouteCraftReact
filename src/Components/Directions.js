@@ -1,75 +1,96 @@
 import { useEffect } from "react";
 import { Polyline } from "react-leaflet";
-import polyline from "@mapbox/polyline"; // Import the polyline decoder
+import polyline from "@mapbox/polyline";
 import { updateSaveDeleteDirections } from "./backendConfig";
 
-function DirectionsComponent({ locations, directions, setDirections, routeId }) {
+function DirectionsComponent({
+  locations,
+  directions,
+  setDirections,
+  routeId,
+}) {
   useEffect(() => {
     const len = locations.length;
-    const fetchedRoutes = new Map(); // Store fetched route ids
+    const fetchedRoutes = new Map();
 
-    // Populate the Map with already fetched route locationConnection (waypoints)
     directions.forEach((direction) => {
-      fetchedRoutes.set(direction.locationConnection, direction); // Add waypoints as key and direction object as value
+      fetchedRoutes.set(direction.locationConnection, direction);
     });
 
+    // more than one location, otherwise no direction possible
     if (len > 1) {
-      const fetchAllDirectionsWithDelay = async () => {
-        let newDirections = []; // Store the new directions
+      const fetchAllDirectionsWithRetry = async () => {
+        let newDirections = [];
 
+        // function to try more than one fetch trys to not fail
+        const fetchWithRetry = async (url, retries = 3, delay = 500) => {
+          for (let attempt = 1; attempt <= retries; attempt++) {
+            try {
+              const response = await fetch(url);
+              if (!response.ok) throw new Error("Network response was not ok");
+              const json = await response.json();
+              return json;
+            } catch (error) {
+              if (attempt === retries) {
+                console.error(`Final attempt failed for URL: ${url}`);
+                throw error;
+              }
+              console.warn(`Attempt ${attempt} failed, retrying in ${delay}ms`);
+              await new Promise((resolve) => setTimeout(resolve, delay));
+            }
+          }
+        };
+
+        // checking every existing direction to not have to make api call
         for (let i = 0; i < locations.length - 1; i++) {
           const waypoints = `${locations[i].lon},${locations[i].lat};${
             locations[i + 1].lon
           },${locations[i + 1].lat}`;
 
-          // Check if the route has already been fetched synchronously and add it to directions
+          // if alread existing, continue loop and not fetching
           if (fetchedRoutes.has(waypoints)) {
             let existingDirection = fetchedRoutes.get(waypoints);
             existingDirection.currentIndex = i;
             newDirections.push(existingDirection);
-            continue; // Skip API call
+            continue;
           }
 
-          // Perform the asynchronous fetch call only when necessary
           try {
-            const response = await fetch(
-              `https://us1.locationiq.com/v1/directions/driving/${waypoints}?key=${process.env.REACT_APP_LOCATIONIQ_KEY}&steps=true&alternatives=true&geometries=polyline&overview=full`
-            );
-            const json = await response.json();
+            const url = `https://us1.locationiq.com/v1/directions/driving/${waypoints}?key=${process.env.REACT_APP_LOCATIONIQ_KEY}&steps=true&alternatives=true&geometries=polyline&overview=full`;
+            const json = await fetchWithRetry(url, 3, 1000);
 
             if (json && json.routes) {
-              json.locationConnection = waypoints; // Add a unique locationConnection to the json object based on the waypoints
+              // adding properties to send to the backend and use in frontend
+              json.locationConnection = waypoints;
               json.geometry = json.routes[0].geometry;
               json.routeId = routeId;
               json.currentIndex = i;
               json.duration = json.routes[0].duration;
               json.distance = json.routes[0].distance;
 
-              newDirections.push(json); // Add the new directions to the array
-              fetchedRoutes.set(waypoints, json); // Add the waypoints to the map to avoid future duplicate fetches
+              newDirections.push(json);
+              fetchedRoutes.set(waypoints, json);
             }
 
-            // Add a delay of 510ms (2 requests per second) / max free tier from the api
             if (i < locations.length - 2) {
-              await new Promise((resolve) => setTimeout(resolve, 510));
+              await new Promise((resolve) => setTimeout(resolve, 1000));
             }
           } catch (error) {
             console.error("Error fetching directions for", waypoints, error);
           }
         }
 
-        // Once all directions are fetched, update the state
-          updateSaveDeleteDirections(newDirections, routeId)
-            .then((fetchedDirections) => {
-              setDirections(fetchedDirections);
-            })
-
+        // backend call to check with saved directions
+        updateSaveDeleteDirections(newDirections, routeId).then(
+          (fetchedDirections) => {
+            setDirections(fetchedDirections);
+          }
+        );
       };
 
-      fetchAllDirectionsWithDelay(); // Call the function to fetch all directions with delay
+      fetchAllDirectionsWithRetry();
     }
-    // eslint-disable-next-line
-  }, [locations]); // Re-run when locations change
+  }, [locations]);
 
   return (
     <>
