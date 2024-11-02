@@ -36,6 +36,7 @@ function DirectionsComponent({ locations, directions, setDirections }) {
 
             if (json && json.routes) {
               json.locationConnection = waypoints; // Add a unique locationConnection to the json object based on the waypoints
+              json.geometry = json.routes[0].geometry;
 
               console.log(json);
 
@@ -67,7 +68,7 @@ function DirectionsComponent({ locations, directions, setDirections }) {
         <Polyline
           key={index}
           positions={polyline
-            .decode(route.routes[0].geometry)
+            .decode(route.geometry)
             .map(([lat, lng]) => [lat, lng])}
           pathOptions={{ color: "blue", weight: 5, opacity: 0.7 }}
         />

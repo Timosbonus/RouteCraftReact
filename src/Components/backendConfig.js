@@ -2,6 +2,8 @@ import axios from "axios";
 
 const API_BACKEND = "http://localhost:8080/api";
 
+// locations
+
 export const getAllLocations = async (routeId) => {
   try {
     const response = await axios.get(
@@ -38,4 +40,40 @@ export const updateSaveDeleteLocations = async (locations, routeId) => {
   }
 };
 
+// directions
 
+export const getAllDirections = async (routeId) => {
+  try {
+    const response = await axios.get(
+      `${API_BACKEND}/directions/spec/${routeId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data; // method returns array of locations
+  } catch (error) {
+    console.error("Error: ", error);
+    throw error;
+  }
+};
+
+
+export const updateSaveDeleteDirections = async (directions, routeId) => {
+  try {
+    const response = await axios.put(
+      `${API_BACKEND}/directions/${routeId}`, // uses put method to send data
+      directions,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data; // takes response with ids, and uses them just update them later
+  } catch (error) {
+    console.error("Error: ", error);
+    throw error;
+  }
+};
