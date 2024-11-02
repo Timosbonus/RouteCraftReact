@@ -7,9 +7,9 @@ function DirectionsComponent({ locations, directions, setDirections }) {
     const len = locations.length;
     const fetchedRoutes = new Map(); // Store fetched route ids
 
-    // Populate the Map with already fetched route ids (waypoints)
+    // Populate the Map with already fetched route locationConnection (waypoints)
     directions.forEach((direction) => {
-      fetchedRoutes.set(direction.id, direction); // Add waypoints as key and direction object as value
+      fetchedRoutes.set(direction.locationConnection, direction); // Add waypoints as key and direction object as value
     });
 
     if (len > 1) {
@@ -35,14 +35,17 @@ function DirectionsComponent({ locations, directions, setDirections }) {
             const json = await response.json();
 
             if (json && json.routes) {
-              json.id = waypoints; // Add a unique id to the json object based on the waypoints
+              json.locationConnection = waypoints; // Add a unique locationConnection to the json object based on the waypoints
+
+              console.log(json);
+
               newDirections.push(json); // Add the new directions to the array
               fetchedRoutes.set(waypoints, json); // Add the waypoints to the map to avoid future duplicate fetches
             }
 
-            // Add a delay of 500ms (2 requests per second)
+            // Add a delay of 510ms (2 requests per second) / max free tier from the api
             if (i < locations.length - 2) {
-              await new Promise((resolve) => setTimeout(resolve, 500));
+              await new Promise((resolve) => setTimeout(resolve, 510));
             }
           } catch (error) {
             console.error("Error fetching directions for", waypoints, error);
