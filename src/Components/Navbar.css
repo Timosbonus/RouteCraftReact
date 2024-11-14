@@ -105,6 +105,12 @@
   cursor: pointer;
 }
 
+.custom-btn-add-route {
+  font-size: 18px;
+
+
+}
+
 .custom-btn:hover {
   background-color: #45a049;
 }

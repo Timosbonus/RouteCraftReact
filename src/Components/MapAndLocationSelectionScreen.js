@@ -79,7 +79,11 @@ function MapAndLocationSelectionScreen({ routeId }) {
   }
   return (
     <div className="overview_container">
-      <Navbar adressInput={adressInput} setNewAdress={setNewAdress}></Navbar>
+      <Navbar
+        adressInput={adressInput}
+        setNewAdress={setNewAdress}
+        routeId={routeId}
+      ></Navbar>
 
       <div className="map_locations_container">
         {locations.length ? (

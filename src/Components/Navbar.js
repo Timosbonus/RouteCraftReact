@@ -1,7 +1,7 @@
 import "./Navbar.css";
 import { useState, useRef, useEffect } from "react";
 
-function Navbar({ adressInput, setNewAdress }) {
+function Navbar({ adressInput, setNewAdress, routeId }) {
   const [suggestions, setSuggestions] = useState([]);
   const [debounceTimeout, setDebounceTimeout] = useState(null); // timeout for too many api calls for the suggestions
   const dropdownRef = useRef(null); // Reference for the dropdown
@@ -60,6 +60,54 @@ function Navbar({ adressInput, setNewAdress }) {
     setNewAdress(inputValue);
   };
 
+
+  // button, when no Route is selected
+  let formAndButtonVersion = (
+    <button onClick={handleSubmit} className="custom-btn custom-btn-add-route" type="submit">
+      Add Route
+    </button>
+  );
+
+
+  // form and button, when Route is selected
+  if (routeId) {
+    formAndButtonVersion = (
+      <form className="custom-search-form" role="search">
+        <div className="custom-input-wrapper">
+          <input
+            type="search"
+            ref={adressInput}
+            placeholder="Enter an address"
+            onChange={getAutocompletion}
+            autoComplete="off"
+          />
+
+          {suggestions.length > 0 && (
+            <ul className="custom-dropdown" ref={dropdownRef}>
+              {suggestions.map((sug, index) => (
+                <li key={index}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      adressInput.current.value = sug.display_name;
+                      setSuggestions([]);
+                    }}
+                  >
+                    {sug.display_name}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <button onClick={handleSubmit} className="custom-btn" type="submit">
+          Set Address
+        </button>
+      </form>
+    );
+  }
+
   return (
     <nav className="custom-navbar">
       <div className="custom-container">
@@ -72,42 +120,10 @@ function Navbar({ adressInput, setNewAdress }) {
           />
           <span className="custom-title">RouteCraft</span>
         </a>
-
-        <span className="current-route">Current Selected Route</span>
-
-        <form className="custom-search-form" role="search">
-          <div className="custom-input-wrapper">
-            <input
-              type="search"
-              ref={adressInput}
-              placeholder="Enter an address"
-              onChange={getAutocompletion}
-              autoComplete="off"
-            />
-
-            {suggestions.length > 0 && (
-              <ul className="custom-dropdown" ref={dropdownRef}>
-                {suggestions.map((sug, index) => (
-                  <li key={index}>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        adressInput.current.value = sug.display_name;
-                        setSuggestions([]);
-                      }}
-                    >
-                      {sug.display_name}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-
-          <button onClick={handleSubmit} className="custom-btn" type="submit">
-            Set Address
-          </button>
-        </form>
+        {formAndButtonVersion}
+        <span className="current-route">
+          {routeId.length > 0 ? routeId : "No Route Selected"}
+        </span>
       </div>
     </nav>
   );
