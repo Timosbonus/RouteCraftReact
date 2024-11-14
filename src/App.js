@@ -4,11 +4,13 @@ import MapAndLocationSelectionScreen from "./Components/MapAndLocationSelectionS
 import RouteOverviewComponent from "./Components/RouteOverviewComponent";
 
 function App() {
-  const [routeId, setRouteId] = useState(""); // routeId for database access
-  
+  const [routeId, setRouteId] = useState(false); // routeId for database access
 
   let curView = (
-    <RouteOverviewComponent routeId={routeId}></RouteOverviewComponent>
+    <RouteOverviewComponent
+      routeId={routeId}
+      setRouteId={setRouteId}
+    ></RouteOverviewComponent>
   );
   if (routeId) {
     curView = (

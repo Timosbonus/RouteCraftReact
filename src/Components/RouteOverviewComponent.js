@@ -2,7 +2,7 @@ import { useState } from "react";
 import Navbar from "./Navbar";
 import Modal from "./Modal";
 
-function RouteOverviewComponent({ routeId }) {
+function RouteOverviewComponent({ routeId, setRouteId }) {
   const [isModalOpen, setModalOpen] = useState(false); // state for current modal state
 
   return (
