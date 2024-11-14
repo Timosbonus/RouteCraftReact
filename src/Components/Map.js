@@ -2,7 +2,7 @@ import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import L from "leaflet";
 import { useEffect } from "react";
 
-import DirectionsComponent from "./Directions";
+import DirectionsComponent from "./DirectionsComponent";
 
 // Component to change the position of the map
 function ChangeMapView({ coords }) {

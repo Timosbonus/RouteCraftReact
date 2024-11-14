@@ -19,9 +19,8 @@ function DirectionsComponent({
 
     // more than one location, otherwise no direction possible
     if (len > 1) {
+      let newDirections = [];
       const fetchAllDirectionsWithRetry = async () => {
-        let newDirections = [];
-
         // function to try more than one fetch trys to not fail
         const fetchWithRetry = async (url, retries = 3, delay = 500) => {
           for (let attempt = 1; attempt <= retries; attempt++) {
@@ -79,7 +78,6 @@ function DirectionsComponent({
             console.error("Error fetching directions for", waypoints, error);
           }
         }
-
         // backend call to check with saved directions
         updateSaveDeleteDirections(newDirections, routeId).then(
           (fetchedDirections) => {
@@ -89,6 +87,12 @@ function DirectionsComponent({
       };
 
       fetchAllDirectionsWithRetry();
+      // else to delete also the last direction, otherwise it doesnt delete. Sende empty array to backend
+      // to set directions array and backend empty
+    } else {
+      updateSaveDeleteDirections([], routeId).then((fetchedRoutes) => {
+        setDirections(fetchedRoutes);
+      });
     }
   }, [locations]);
 
