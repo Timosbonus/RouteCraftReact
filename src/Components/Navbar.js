@@ -1,7 +1,7 @@
 import "./Navbar.css";
 import { useState, useRef, useEffect } from "react";
 
-function Navbar({ adressInput, setNewAdress, routeId }) {
+function Navbar({ adressInput, setNewAdress, routeId, setModalOpen }) {
   const [suggestions, setSuggestions] = useState([]);
   const [debounceTimeout, setDebounceTimeout] = useState(null); // timeout for too many api calls for the suggestions
   const dropdownRef = useRef(null); // Reference for the dropdown
@@ -60,14 +60,16 @@ function Navbar({ adressInput, setNewAdress, routeId }) {
     setNewAdress(inputValue);
   };
 
-
   // button, when no Route is selected
   let formAndButtonVersion = (
-    <button onClick={handleSubmit} className="custom-btn custom-btn-add-route" type="submit">
+    <button
+      onClick={setModalOpen}
+      className="custom-btn custom-btn-add-route"
+      type="submit"
+    >
       Add Route
     </button>
   );
-
 
   // form and button, when Route is selected
   if (routeId) {

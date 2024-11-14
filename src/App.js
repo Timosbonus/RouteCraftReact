@@ -5,8 +5,11 @@ import RouteOverviewComponent from "./Components/RouteOverviewComponent";
 
 function App() {
   const [routeId, setRouteId] = useState(""); // routeId for database access
+  
 
-  let curView = <RouteOverviewComponent routeId={routeId}></RouteOverviewComponent>;
+  let curView = (
+    <RouteOverviewComponent routeId={routeId}></RouteOverviewComponent>
+  );
   if (routeId) {
     curView = (
       <MapAndLocationSelectionScreen
