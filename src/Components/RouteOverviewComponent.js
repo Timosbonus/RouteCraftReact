@@ -3,11 +3,11 @@ import Navbar from "./Navbar";
 import Modal from "./Modal";
 import RouteModal from "./RouteModal";
 
-function RouteOverviewComponent({ routeId, setRouteId }) {
+function RouteOverviewComponent({ routeInformation, setRouteInformation }) {
   const [isModalOpen, setModalOpen] = useState(false); // state for current modal state
 
   function handleNewRouteInformation(newRouteId, breakDuration, startTime) {
-    setRouteId({
+    setRouteInformation({
       routeId: newRouteId.current.value,
       defaultBreakDuration: breakDuration.current.value,
       startTime: startTime.current.value,
@@ -17,11 +17,11 @@ function RouteOverviewComponent({ routeId, setRouteId }) {
 
   return (
     <>
-      <Navbar routeId={routeId} setModalOpen={setModalOpen}></Navbar>
+      <Navbar routeInformation={routeInformation} setModalOpen={setModalOpen}></Navbar>
       <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
         <RouteModal
           handleNewRouteInformation={handleNewRouteInformation}
-          routeId={routeId}
+          routeInformation={routeInformation}
         >
           <h2>Add new Route</h2>
           <p>Add all relevant Information below</p>

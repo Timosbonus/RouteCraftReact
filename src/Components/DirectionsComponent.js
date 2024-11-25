@@ -7,8 +7,12 @@ function DirectionsComponent({
   locations,
   directions,
   setDirections,
-  routeId,
+  routeInformation,
 }) {
+  console.log(routeInformation);
+  const routeId = routeInformation ? routeInformation.routeId : "";
+
+
   useEffect(() => {
     const len = locations.length;
     const fetchedRoutes = new Map();

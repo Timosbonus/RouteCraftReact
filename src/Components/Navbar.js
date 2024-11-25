@@ -1,7 +1,7 @@
 import "./Navbar.css";
 import { useState, useRef, useEffect } from "react";
 
-function Navbar({ adressInput, setNewAdress, routeId, setModalOpen }) {
+function Navbar({ adressInput, setNewAdress, routeInformation, setModalOpen }) {
   const [suggestions, setSuggestions] = useState([]);
   const [debounceTimeout, setDebounceTimeout] = useState(null); // timeout for too many api calls for the suggestions
   const dropdownRef = useRef(null); // Reference for the dropdown
@@ -72,7 +72,7 @@ function Navbar({ adressInput, setNewAdress, routeId, setModalOpen }) {
   );
 
   // form and button, when Route is selected
-  if (routeId) {
+  if (routeInformation) {
     formAndButtonVersion = (
       <form className="custom-search-form" role="search">
         <div className="custom-input-wrapper">
@@ -124,7 +124,7 @@ function Navbar({ adressInput, setNewAdress, routeId, setModalOpen }) {
         </a>
         {formAndButtonVersion}
         <span className="current-route">
-          {routeId.length > 0 ? routeId : "No Route Selected"}
+          {routeInformation ? routeInformation.routeId : "No Route Selected"}
         </span>
       </div>
     </nav>

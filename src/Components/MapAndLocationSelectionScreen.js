@@ -10,15 +10,17 @@ import {
   getAllDirections,
 } from "./backendConfig";
 
-function MapAndLocationSelectionScreen({ routeId }) {
+function MapAndLocationSelectionScreen({ routeInformation }) {
   const adressInput = useRef(null);
   const [locations, setLocations] = useState([]); // Array to hold locations
   const [directions, setDirections] = useState([]); // Array to hold directions
   const [defaultBreakDuration, setDefaultBreakDuration] = useState(20); // in minutes
 
+  const routeId = routeInformation.routeId;
+
   useEffect(() => {
     // useEffect to check the locations with specific routeId
-    if (routeId) {
+    if (routeInformation) {
       getAllLocations(routeId)
         .then((newLocations) => {
           if (newLocations.length === 0) {
@@ -92,7 +94,7 @@ function MapAndLocationSelectionScreen({ routeId }) {
               locations={locations}
               directions={directions}
               setDirections={setDirections}
-              routeId={routeId}
+              routeInformation={routeInformation}
             />
             <LocationRoutesComp
               className="locations-routes-comp"
@@ -101,7 +103,7 @@ function MapAndLocationSelectionScreen({ routeId }) {
               setLocations={setLocations}
               defaultBreakDuration={defaultBreakDuration}
               setDefaultBreakDuration={setDefaultBreakDuration}
-              routeId={routeId}
+              routeInformation={routeInformation}
               setDirections={setDirections}
             />
           </>

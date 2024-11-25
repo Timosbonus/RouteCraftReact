@@ -1,16 +1,16 @@
 import { useRef } from "react";
 
-function RouteModal({ children, handleNewRouteInformation, routeId }) {
+function RouteModal({ children, handleNewRouteInformation, routeInformation }) {
   // refs for standard values
   const newRouteId = useRef("");
   const breakDuration = useRef(20);
-  const startTime = useRef("07:00");
+  const startTime = useRef("07:30");
 
-  if (routeId) {
+  if (routeInformation) {
     // checks if routeId is false
-    newRouteId.current = routeId.routeId;
-    breakDuration.current = routeId.breakDuration;
-    startTime.current = routeId.startTime;
+    newRouteId.current = routeInformation.routeId;
+    breakDuration.current = routeInformation.breakDuration;
+    startTime.current = routeInformation.startTime;
   }
 
   return (

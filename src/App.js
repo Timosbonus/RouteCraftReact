@@ -5,12 +5,12 @@ import RouteOverviewComponent from "./Components/RouteOverviewComponent";
 import { updateSelectedRoute } from "./Components/backendConfig";
 
 function App() {
-  const [routeId, setRouteId] = useState(false); // routeId for database access
+  const [routeInformation, setRouteInformation] = useState(false); // routeId for database access
 
-  function handleSetRouteId(input) {
+  function handleSetRouteInformation(input) {
     updateSelectedRoute(input)
       .then((newRoute) => {
-        setRouteId(newRoute);
+        setRouteInformation(newRoute);
       })
       .catch((error) => {
         console.error("Error updating Route: ", error);
@@ -19,14 +19,14 @@ function App() {
 
   let curView = (
     <RouteOverviewComponent
-      routeId={routeId}
-      setRouteId={handleSetRouteId}
+      routeInformation={routeInformation}
+      setRouteInformation={handleSetRouteInformation}
     ></RouteOverviewComponent>
   );
-  if (routeId) {
+  if (routeInformation) {
     curView = (
       <MapAndLocationSelectionScreen
-        routeId={routeId.routeId}
+        routeInformation={routeInformation}
       ></MapAndLocationSelectionScreen>
     );
   }
