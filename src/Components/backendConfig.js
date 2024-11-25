@@ -94,7 +94,7 @@ export const getSelectedRoute = async (routeId) => {
 
 export const updateSelectedRoute = async (routeId) => {
   try {
-    const response = await axios.put(`${API_BACKEND}/routes/${routeId}`, {
+    const response = await axios.put(`${API_BACKEND}/routes`, routeId, {
       headers: {
         "Content-Type": "application/json",
       },

@@ -19,7 +19,12 @@ function RouteModal({ children, handleNewRouteInformation, routeId }) {
       <form>
         <div>
           <label>Routenname</label>
-          <input type="text" id="routeId" defaultValue={newRouteId.current} />
+          <input
+            type="text"
+            id="routeId"
+            defaultValue={newRouteId.current}
+            ref={newRouteId}
+          />
         </div>
         <div>
           <label>Break</label>
