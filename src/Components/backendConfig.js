@@ -59,7 +59,6 @@ export const getAllDirections = async (routeId) => {
   }
 };
 
-
 export const updateSaveDeleteDirections = async (directions, routeId) => {
   try {
     const response = await axios.put(
@@ -72,6 +71,63 @@ export const updateSaveDeleteDirections = async (directions, routeId) => {
       }
     );
     return response.data; // takes response with ids, and uses them just update them later
+  } catch (error) {
+    console.error("Error: ", error);
+    throw error;
+  }
+};
+
+// routes
+export const getSelectedRoute = async (routeId) => {
+  try {
+    const response = await axios.get(`${API_BACKEND}/routes/${routeId}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data; // method returns selected route
+  } catch (error) {
+    console.error("Error: ", error);
+    throw error;
+  }
+};
+
+export const updateSelectedRoute = async (routeId) => {
+  try {
+    const response = await axios.put(`${API_BACKEND}/routes/${routeId}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data; // method returns updated route
+  } catch (error) {
+    console.error("Error: ", error);
+    throw error;
+  }
+};
+
+export const deleteSelectedRoute = async (routeId) => {
+  try {
+    const response = await axios.delete(`${API_BACKEND}/routes/${routeId}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data; // method returns deleted route
+  } catch (error) {
+    console.error("Error: ", error);
+    throw error;
+  }
+};
+
+export const getAllRoutes = async (routeId) => {
+  try {
+    const response = await axios.put(`${API_BACKEND}/routes/all`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data; // method returns selected route
   } catch (error) {
     console.error("Error: ", error);
     throw error;
