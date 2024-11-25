@@ -42,7 +42,9 @@ function RouteModal({ children, handleNewRouteInformation, routeId }) {
         <button
           type="submit"
           style={{ marginTop: "20px" }}
-          onClick={() => handleNewRouteInformation()}
+          onClick={() =>
+            handleNewRouteInformation(newRouteId, breakDuration, startTime)
+          }
         >
           Save new Route
         </button>

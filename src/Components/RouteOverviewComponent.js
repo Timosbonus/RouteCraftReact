@@ -6,8 +6,12 @@ import RouteModal from "./RouteModal";
 function RouteOverviewComponent({ routeId, setRouteId }) {
   const [isModalOpen, setModalOpen] = useState(false); // state for current modal state
 
-  function handleNewRouteInformation(formData) {
-    setRouteId(formData);
+  function handleNewRouteInformation(routeId, breakDuration, startTime) {
+    setRouteId({
+      routeId: routeId,
+      breakDuration: breakDuration,
+      startTime: startTime,
+    });
     setModalOpen(false);
   }
 
