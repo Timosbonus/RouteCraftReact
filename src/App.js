@@ -26,7 +26,7 @@ function App() {
   if (routeId) {
     curView = (
       <MapAndLocationSelectionScreen
-        routeId={routeId}
+        routeId={routeId.routeId}
       ></MapAndLocationSelectionScreen>
     );
   }
