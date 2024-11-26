@@ -124,7 +124,9 @@ function Navbar({ adressInput, setNewAdress, routeInformation, setModalOpen }) {
         </a>
 
         <h1 className="current-route">
-          {routeInformation ? routeInformation.routeId.toUpperCase() : "No Route Selected"}
+          {routeInformation
+            ? routeInformation.routeId.toUpperCase()
+            : "No Route Selected"}
         </h1>
 
         {formAndButtonVersion}

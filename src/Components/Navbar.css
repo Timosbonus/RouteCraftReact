@@ -51,6 +51,7 @@
   display: flex;
   align-items: center;
   width: 70%;
+  position: relative;
 }
 
 .custom-input-wrapper input {
