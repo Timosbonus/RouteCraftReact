@@ -11,7 +11,6 @@ function DirectionsComponent({
 }) {
   const routeId = routeInformation ? routeInformation.routeId : "";
 
-
   useEffect(() => {
     const len = locations.length;
     const fetchedRoutes = new Map();
@@ -97,7 +96,7 @@ function DirectionsComponent({
         setDirections(fetchedRoutes);
       });
     }
-  }, [locations]);
+  }, [locations, directions, routeId, setDirections]);
 
   return (
     <>

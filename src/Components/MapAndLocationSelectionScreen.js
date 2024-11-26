@@ -72,8 +72,7 @@ function MapAndLocationSelectionScreen({
 
           if (!exists) {
             // sets json data for breakDuration and the routeId
-            newLocation.breakDuration =
-              routeInformation.defaultBreakDuration;
+            newLocation.breakDuration = routeInformation.defaultBreakDuration;
             newLocation.routeId = routeId;
             newLocation.current_index = locations.length; // adds new current index to sort later
             handleSetNewAdress(newLocation);
