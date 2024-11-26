@@ -14,7 +14,9 @@ function MapAndLocationSelectionScreen({ routeInformation }) {
   const adressInput = useRef(null);
   const [locations, setLocations] = useState([]); // Array to hold locations
   const [directions, setDirections] = useState([]); // Array to hold directions
-  const [defaultBreakDuration, setDefaultBreakDuration] = useState(20); // in minutes
+  const [defaultBreakDuration, setDefaultBreakDuration] = useState(
+    routeInformation.defaultBreakDuration
+  ); // in minutes
 
   const routeId = routeInformation.routeId;
 
@@ -84,7 +86,7 @@ function MapAndLocationSelectionScreen({ routeInformation }) {
       <Navbar
         adressInput={adressInput}
         setNewAdress={setNewAdress}
-        routeId={routeId}
+        routeInformation={routeInformation}
       ></Navbar>
 
       <div className="map_locations_container">
@@ -101,7 +103,6 @@ function MapAndLocationSelectionScreen({ routeInformation }) {
               locations={locations}
               directions={directions}
               setLocations={setLocations}
-              defaultBreakDuration={defaultBreakDuration}
               setDefaultBreakDuration={setDefaultBreakDuration}
               routeInformation={routeInformation}
               setDirections={setDirections}

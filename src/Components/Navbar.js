@@ -120,12 +120,14 @@ function Navbar({ adressInput, setNewAdress, routeInformation, setModalOpen }) {
             width="40"
             height="40"
           />
-          <span className="custom-title">RouteCraft</span>
+          <h1 className="custom-title">RouteCraft</h1>
         </a>
+
+        <h1 className="current-route">
+          {routeInformation ? routeInformation.routeId.toUpperCase() : "No Route Selected"}
+        </h1>
+
         {formAndButtonVersion}
-        <span className="current-route">
-          {routeInformation ? routeInformation.routeId : "No Route Selected"}
-        </span>
       </div>
     </nav>
   );

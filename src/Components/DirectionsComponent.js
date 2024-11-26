@@ -9,7 +9,6 @@ function DirectionsComponent({
   setDirections,
   routeInformation,
 }) {
-  console.log(routeInformation);
   const routeId = routeInformation ? routeInformation.routeId : "";
 
 

@@ -13,19 +13,16 @@ function LocationRoutesComp({
   locations,
   directions,
   setLocations,
-  defaultBreakDuration,
   setDefaultBreakDuration,
   routeInformation,
   setDirections,
 }) {
-  const [startTime, setStartTime] = useState(
-    routeInformation ? routeInformation.startTime : "07:00"
-  ); // standard start time
+  const [startTime, setStartTime] = useState(routeInformation.startTime); // standard start time
   const previousDefaultBreak = usePrevious(
-    routeInformation ? routeInformation.defaultBreakDuration : 20
+    routeInformation.defaultBreakDuration
   );
 
-  const routeId = routeInformation ? routeInformation.routeId : "";
+  const routeId = routeInformation.routeId;
 
   // save break durations in locations array
   useEffect(() => {
@@ -34,12 +31,12 @@ function LocationRoutesComp({
 
       // Only update the break if it's set to the previous default break
       if (current === previousDefaultBreak) {
-        locations[i].breakDuration = defaultBreakDuration;
+        locations[i].breakDuration = routeInformation.defaultBreakDuration;
       }
     }
     setLocations([...locations]); // Trigger a re-render with updated break durations
     // eslint-disable-next-line
-  }, [defaultBreakDuration]);
+  }, [routeInformation]);
 
   // handles start time
   const handleTimeChange = (event) => {
@@ -178,7 +175,7 @@ function LocationRoutesComp({
         <input
           type="number"
           onChange={handleDefaultBreakChange}
-          value={defaultBreakDuration}
+          value={routeInformation.defaultBreakDuration}
           className="break-duration"
           placeholder="Default Break"
         />

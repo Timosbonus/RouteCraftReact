@@ -14,7 +14,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  position: relative;
 }
 
 .custom-brand {
@@ -43,34 +42,32 @@
 
 .custom-search-form {
   display: flex;
+  flex-direction: row;
   align-items: center;
   width: 30%;
 }
 
 .custom-input-wrapper {
   display: flex;
-  position: relative;
-  width: 80%;
+  align-items: center;
+  width: 70%;
 }
 
 .custom-input-wrapper input {
+  flex-grow: 1;
   padding: 8px 12px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 14px;
-  width: 100%;
 }
 
 .custom-dropdown {
   position: absolute;
   top: 100%;
-  left: 0;
-  right: 0;
   background-color: white;
   border: 1px solid #ccc;
   border-radius: 4px;
   margin-top: 5px;
-  list-style: none;
   padding: 0;
   max-height: 200px;
   overflow-y: auto;
@@ -84,11 +81,8 @@
 
 .custom-dropdown li button {
   background: none;
-  border: none;
-  width: 100%;
   text-align: left;
-  padding: 8px;
-  cursor: pointer;
+  color: #333;
 }
 
 .custom-dropdown li button:hover {
@@ -103,12 +97,11 @@
   border-radius: 4px;
   margin-left: 10px;
   cursor: pointer;
+  align-self: center;
 }
 
 .custom-btn-add-route {
   font-size: 18px;
-
-
 }
 
 .custom-btn:hover {
