@@ -27,6 +27,7 @@ function App() {
     curView = (
       <MapAndLocationSelectionScreen
         routeInformation={routeInformation}
+        handleSetRouteInformation={handleSetRouteInformation}
       ></MapAndLocationSelectionScreen>
     );
   }

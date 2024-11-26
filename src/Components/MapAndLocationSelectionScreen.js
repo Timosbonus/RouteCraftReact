@@ -10,13 +10,13 @@ import {
   getAllDirections,
 } from "./backendConfig";
 
-function MapAndLocationSelectionScreen({ routeInformation }) {
+function MapAndLocationSelectionScreen({
+  routeInformation,
+  handleSetRouteInformation,
+}) {
   const adressInput = useRef(null);
   const [locations, setLocations] = useState([]); // Array to hold locations
   const [directions, setDirections] = useState([]); // Array to hold directions
-  const [defaultBreakDuration, setDefaultBreakDuration] = useState(
-    routeInformation.defaultBreakDuration
-  ); // in minutes
 
   const routeId = routeInformation.routeId;
 
@@ -72,7 +72,8 @@ function MapAndLocationSelectionScreen({ routeInformation }) {
 
           if (!exists) {
             // sets json data for breakDuration and the routeId
-            newLocation.breakDuration = defaultBreakDuration;
+            newLocation.breakDuration =
+              routeInformation.defaultBreakDuration;
             newLocation.routeId = routeId;
             newLocation.current_index = locations.length; // adds new current index to sort later
             handleSetNewAdress(newLocation);
@@ -103,7 +104,7 @@ function MapAndLocationSelectionScreen({ routeInformation }) {
               locations={locations}
               directions={directions}
               setLocations={setLocations}
-              setDefaultBreakDuration={setDefaultBreakDuration}
+              handleSetRouteInformation={handleSetRouteInformation}
               routeInformation={routeInformation}
               setDirections={setDirections}
             />

@@ -13,11 +13,10 @@ function LocationRoutesComp({
   locations,
   directions,
   setLocations,
-  setDefaultBreakDuration,
   routeInformation,
+  handleSetRouteInformation,
   setDirections,
 }) {
-  const [startTime, setStartTime] = useState(routeInformation.startTime); // standard start time
   const previousDefaultBreak = usePrevious(
     routeInformation.defaultBreakDuration
   );
@@ -40,19 +39,22 @@ function LocationRoutesComp({
 
   // handles start time
   const handleTimeChange = (event) => {
-    setStartTime(event.target.value);
+    let updatedRouteInformation = routeInformation;
+    updatedRouteInformation.startTime = event.target.value;
+    handleSetRouteInformation(updatedRouteInformation);
   };
 
   const handleDefaultBreakChange = (event) => {
-    const newDefaultBreak = Number(event.target.value);
-    setDefaultBreakDuration(newDefaultBreak);
+    let updatedRouteInformation = routeInformation;
+    updatedRouteInformation.defaultBreakDuration = event.target.value;
+    handleSetRouteInformation(updatedRouteInformation);
   };
 
   const calculateArrivalTime = (index) => {
     if (index === 0) return ""; // no arrival time for first address
 
     const startDate = new Date();
-    const [hours, minutes] = startTime.split(":").map(Number);
+    const [hours, minutes] = routeInformation.startTime.split(":").map(Number);
     startDate.setHours(hours);
     startDate.setMinutes(minutes);
 
@@ -79,7 +81,7 @@ function LocationRoutesComp({
   };
 
   const calculateDepartureTime = (index) => {
-    if (index === 0) return startTime; // for the first address, it's the start time
+    if (index === 0) return routeInformation.startTime; // for the first address, it's the start time
 
     const arrivalDate = calculateArrivalTime(index);
     if (!arrivalDate) return "";
@@ -109,7 +111,7 @@ function LocationRoutesComp({
 
     setLocations(items);
 
-    updateSaveDeleteLocations(items, "route123") // axios method to get data from Backend
+    updateSaveDeleteLocations(items, routeId) // axios method to get data from Backend
       .then((newLocations) => {
         setLocations(newLocations); // Takes data from api to set array
       })
@@ -166,7 +168,7 @@ function LocationRoutesComp({
         <input
           type="time"
           onChange={handleTimeChange}
-          value={startTime}
+          value={routeInformation.startTime}
           className="departure-time"
         />
       </div>
