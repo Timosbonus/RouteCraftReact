@@ -14,7 +14,6 @@ function MapAndLocationSelectionScreen({
   routeInformation,
   handleSetRouteInformation,
 }) {
-  const adressInput = useRef(null);
   const [locations, setLocations] = useState([]); // Array to hold locations
   const [directions, setDirections] = useState([]); // Array to hold directions
 
@@ -43,6 +42,7 @@ function MapAndLocationSelectionScreen({
     }
   }, [routeInformation]);
 
+  // function which accepts a new location updates the location array and sends and receives data from backend, ALWAYS CALL setNewAdress!
   function handleSetNewAdress(newLocation) {
     const updatedLocations = [...locations, newLocation];
 
@@ -55,6 +55,7 @@ function MapAndLocationSelectionScreen({
       });
   }
 
+  // function to get the adress data from api and calls the handleSetNewAdress function with the newly received data
   function setNewAdress(inputValue) {
     fetch(
       `https://us1.locationiq.com/v1/search?key=${
@@ -84,7 +85,6 @@ function MapAndLocationSelectionScreen({
   return (
     <div className="overview_container">
       <Navbar
-        adressInput={adressInput}
         setNewAdress={setNewAdress}
         routeInformation={routeInformation}
       ></Navbar>

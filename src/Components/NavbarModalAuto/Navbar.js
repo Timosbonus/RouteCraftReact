@@ -1,63 +1,21 @@
+import AdressAuto from "./AdressAuto";
 import "./Navbar.css";
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 
-function Navbar({ adressInput, setNewAdress, routeInformation, setModalOpen }) {
-  const [suggestions, setSuggestions] = useState([]);
-  const [debounceTimeout, setDebounceTimeout] = useState(null); // timeout for too many api calls for the suggestions
-  const dropdownRef = useRef(null); // Reference for the dropdown
+function Navbar({ setNewAdress, routeInformation, setModalOpen }) {
+  const [adressInput, setAdressInput] = useState("");
+  const [showAdressAuto, setShowAdressAuto] = useState(false); // state to handle when the AdressAuto Component suggestions should show up
 
-  // function to get the autocompletion feature for the addresses
-  function getAutocompletion() {
-    const inputValue = adressInput.current.value;
-
-    if (debounceTimeout) {
-      clearTimeout(debounceTimeout);
-    }
-
-    // sets new timeout after the api call
-    const newTimeout = setTimeout(() => {
-      if (inputValue.length >= 3) {
-        fetch(
-          `https://api.locationiq.com/v1/autocomplete?key=${
-            process.env.REACT_APP_LOCATIONIQ_KEY
-          }&q=${encodeURIComponent(inputValue)}&limit=5&dedupe=1&`
-        )
-          .then((response) => response.json())
-          .then((json) => {
-            if (json && json.length > 0) {
-              setSuggestions(json);
-            } // getting data from api and filling in array to display data
-          })
-          .catch((error) => console.error("Error fetching address:", error));
-      } else {
-        setSuggestions([]); // Clear suggestions if input length is less than 3
-      }
-    }, 500);
-
-    setDebounceTimeout(newTimeout);
+  // handles new SetAdressInput and sets the state of showAdressAuto
+  function handleSetAdressInput(input, showState) {
+    setAdressInput(input);
+    setShowAdressAuto(showState);
   }
-
-  // Close suggestions when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setSuggestions([]);
-      }
-    }
-
-    // Attach event listener
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      // Clean up event listener on component unmount
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [dropdownRef]);
 
   // Helper Function to get the event from the form und call setNewAdress Function
   const handleSubmit = (event) => {
     event.preventDefault();
-    const inputValue = adressInput.current.value;
-    setNewAdress(inputValue);
+    setNewAdress(adressInput);
   };
 
   // button, when no Route is selected
@@ -74,36 +32,28 @@ function Navbar({ adressInput, setNewAdress, routeInformation, setModalOpen }) {
   // form and button, when Route is selected
   if (routeInformation) {
     formAndButtonVersion = (
-      <form className="custom-search-form" role="search">
+      <form
+        className="custom-search-form"
+        role="search"
+        onSubmit={handleSubmit}
+      >
         <div className="custom-input-wrapper">
           <input
             type="search"
-            ref={adressInput}
+            value={adressInput}
             placeholder="Enter an address"
-            onChange={getAutocompletion}
-            autoComplete="off"
+            onChange={(e) => handleSetAdressInput(e.target.value, true)}
           />
-
-          {suggestions.length > 0 && (
-            <ul className="custom-dropdown" ref={dropdownRef}>
-              {suggestions.map((sug, index) => (
-                <li key={index}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      adressInput.current.value = sug.display_name;
-                      setSuggestions([]);
-                    }}
-                  >
-                    {sug.display_name}
-                  </button>
-                </li>
-              ))}
-            </ul>
+          {showAdressAuto && ( // shows the AdressAutoComponent only, if showAdressAuto is true
+            <AdressAuto
+              setShowAdressAuto={setShowAdressAuto}
+              adressInput={adressInput}
+              handleSetAdressInput={handleSetAdressInput}
+            ></AdressAuto>
           )}
         </div>
 
-        <button onClick={handleSubmit} className="custom-btn" type="submit">
+        <button className="custom-btn" type="submit">
           Set Address
         </button>
       </form>
