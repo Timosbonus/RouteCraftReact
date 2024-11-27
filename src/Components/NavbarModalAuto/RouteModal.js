@@ -1,10 +1,14 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import AdressAuto from "./AdressAuto";
 
 function RouteModal({ children, handleNewRouteInformation, routeInformation }) {
   // refs for standard values
   const newRouteId = useRef("");
   const breakDuration = useRef(20);
   const startTime = useRef("07:30");
+  const [adressInput, setAdressInput] = useState(
+    "Ersigstraße 10a, 76275 Ettlingen"
+  );
 
   if (routeInformation) {
     // checks if routeId is false
@@ -49,8 +53,13 @@ function RouteModal({ children, handleNewRouteInformation, routeInformation }) {
           <input
             type="text"
             id="adress"
-            defaultValue={"Ersigstraße 10a, 76275 Ettlingen"}
+            value={adressInput}
+            onChange={(e) => setAdressInput(e.target.value)}
           />
+          <AdressAuto
+            adressInput={adressInput}
+            setAdressInput={setAdressInput}
+          ></AdressAuto>
         </div>
         <button
           type="submit"
