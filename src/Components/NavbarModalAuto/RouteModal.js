@@ -3,7 +3,7 @@ import AdressAuto from "./AdressAuto";
 
 function RouteModal({ children, handleNewRouteInformation, routeInformation }) {
   // refs for standard values
-  const newRouteId = useRef("");
+  const newRouteId = useRef(new Date().toLocaleDateString("de-DE"));
   const breakDuration = useRef(20);
   const startTime = useRef("07:30");
   const [adressInput, setAdressInput] = useState(
