@@ -96,7 +96,7 @@ function DirectionsComponent({
         setDirections(fetchedRoutes);
       });
     }
-  }, [locations, directions, routeId, setDirections]);
+  }, [routeInformation, locations]);
 
   return (
     <>

@@ -41,7 +41,7 @@ function MapAndLocationSelectionScreen({
         setDirections(newDirections);
       });
     }
-  }, [routeId]);
+  }, [routeInformation]);
 
   function handleSetNewAdress(newLocation) {
     const updatedLocations = [...locations, newLocation];
