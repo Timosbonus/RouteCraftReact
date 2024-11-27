@@ -6,9 +6,11 @@ function RouteModal({ children, handleNewRouteInformation, routeInformation }) {
   const newRouteId = useRef("");
   const breakDuration = useRef(20);
   const startTime = useRef("07:30");
-  const [adressInput, setAdressInput] = useState(
-    "Ersigstraße 10a, 76275 Ettlingen"
-  );
+  const [adressInput, setAdressInput] = useState("");
+
+  function handleSetAdressInput(input) {
+    setAdressInput(input);
+  }
 
   if (routeInformation) {
     // checks if routeId is false
@@ -54,11 +56,11 @@ function RouteModal({ children, handleNewRouteInformation, routeInformation }) {
             type="text"
             id="adress"
             value={adressInput}
-            onChange={(e) => setAdressInput(e.target.value)}
+            onChange={(e) => handleSetAdressInput(e.target.value)}
           />
           <AdressAuto
             adressInput={adressInput}
-            setAdressInput={setAdressInput}
+            handleSetAdressInput={handleSetAdressInput}
           ></AdressAuto>
         </div>
         <button

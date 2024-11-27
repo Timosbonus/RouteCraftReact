@@ -1,7 +1,7 @@
 import "./AdressAuto.css";
 import { useState, useRef, useEffect } from "react";
 
-function AdressAuto({ adressInput, setAdressInput }) {
+function AdressAuto({ adressInput, handleSetAdressInput }) {
   const [suggestions, setSuggestions] = useState([]);
   const [debounceTimeout, setDebounceTimeout] = useState(null); // timeout for too many api calls for the suggestions
   const dropdownRef = useRef(null); // Reference for the dropdown
@@ -60,7 +60,7 @@ function AdressAuto({ adressInput, setAdressInput }) {
               <button
                 type="button"
                 onClick={() => {
-                  setAdressInput(sug.display_name);
+                  handleSetAdressInput(sug.display_name);
                   setSuggestions([]);
                 }}
               >
