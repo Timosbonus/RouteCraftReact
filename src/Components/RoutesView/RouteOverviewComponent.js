@@ -1,7 +1,7 @@
 import { useState } from "react";
-import Navbar from "./Navbar";
-import Modal from "./Modal";
-import RouteModal from "./RouteModal";
+import Navbar from "../NavbarModalAuto/Navbar";
+import Modal from "../NavbarModalAuto/Modal";
+import RouteModal from "../NavbarModalAuto/RouteModal";
 
 function RouteOverviewComponent({ routeInformation, setRouteInformation }) {
   const [isModalOpen, setModalOpen] = useState(false); // state for current modal state
@@ -17,7 +17,10 @@ function RouteOverviewComponent({ routeInformation, setRouteInformation }) {
 
   return (
     <>
-      <Navbar routeInformation={routeInformation} setModalOpen={setModalOpen}></Navbar>
+      <Navbar
+        routeInformation={routeInformation}
+        setModalOpen={setModalOpen}
+      ></Navbar>
       <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
         <RouteModal
           handleNewRouteInformation={handleNewRouteInformation}

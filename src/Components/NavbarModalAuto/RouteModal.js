@@ -18,7 +18,7 @@ function RouteModal({ children, handleNewRouteInformation, routeInformation }) {
       {children}
       <form>
         <div>
-          <label>Routenname</label>
+          <label>Route Name</label>
           <input
             type="text"
             id="routeId"
@@ -42,6 +42,14 @@ function RouteModal({ children, handleNewRouteInformation, routeInformation }) {
             id="startTime"
             defaultValue={startTime.current}
             ref={startTime} // ref für Startzeit
+          />
+        </div>
+        <div>
+          <label>Adress</label>
+          <input
+            type="text"
+            id="adress"
+            defaultValue={"Ersigstraße 10a, 76275 Ettlingen"}
           />
         </div>
         <button

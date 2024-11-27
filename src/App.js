@@ -1,8 +1,8 @@
 import "./App.css";
 import { useState } from "react";
-import MapAndLocationSelectionScreen from "./Components/MapAndLocationSelectionScreen";
-import RouteOverviewComponent from "./Components/RouteOverviewComponent";
-import { updateSelectedRoute } from "./Components/backendConfig";
+import MapAndLocationSelectionScreen from "./Components/MapView/MapAndLocationSelectionScreen";
+import RouteOverviewComponent from "./Components/RoutesView/RouteOverviewComponent";
+import { updateSelectedRoute } from "./Components/etc/backendConfig";
 
 function App() {
   const [routeInformation, setRouteInformation] = useState(false); // routeId for database access
