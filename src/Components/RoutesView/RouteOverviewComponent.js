@@ -3,15 +3,25 @@ import Navbar from "../NavbarModalAuto/Navbar";
 import Modal from "../NavbarModalAuto/Modal";
 import RouteModal from "../NavbarModalAuto/RouteModal";
 
-function RouteOverviewComponent({ routeInformation, setRouteInformation }) {
+function RouteOverviewComponent({
+  routeInformation,
+  setRouteInformation,
+  setNewAdress,
+}) {
   const [isModalOpen, setModalOpen] = useState(false); // state for current modal state
 
-  function handleNewRouteInformation(newRouteId, breakDuration, startTime) {
+  function handleNewRouteInformation(
+    newRouteId,
+    breakDuration,
+    startTime,
+    adressInput
+  ) {
     setRouteInformation({
       routeId: newRouteId.current.value,
       defaultBreakDuration: breakDuration.current.value,
       startTime: startTime.current.value,
     });
+    setNewAdress(adressInput, newRouteId);
     setModalOpen(false);
   }
 

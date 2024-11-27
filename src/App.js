@@ -94,8 +94,10 @@ function App() {
     <RouteOverviewComponent
       routeInformation={routeInformation}
       setRouteInformation={handleSetRouteInformation}
+      setNewAdress={setNewAdress}
     ></RouteOverviewComponent>
   );
+  
   if (routeInformation) {
     curView = (
       <MapAndLocationSelectionScreen
