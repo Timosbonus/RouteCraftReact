@@ -6,10 +6,14 @@ function RouteModal({ children, handleNewRouteInformation, routeInformation }) {
   const newRouteId = useRef("");
   const breakDuration = useRef(20);
   const startTime = useRef("07:30");
-  const [adressInput, setAdressInput] = useState("");
+  const [adressInput, setAdressInput] = useState(
+    "Ersigstraße 10a, 76275 Ettlingen"
+  );
+  const [showAdressAuto, setShowAdressAuto] = useState(false);
 
-  function handleSetAdressInput(input) {
+  function handleSetAdressInput(input, showState) {
     setAdressInput(input);
+    setShowAdressAuto(showState);
   }
 
   if (routeInformation) {
@@ -56,12 +60,15 @@ function RouteModal({ children, handleNewRouteInformation, routeInformation }) {
             type="text"
             id="adress"
             value={adressInput}
-            onChange={(e) => handleSetAdressInput(e.target.value)}
+            onChange={(e) => handleSetAdressInput(e.target.value, true)}
           />
-          <AdressAuto
-            adressInput={adressInput}
-            handleSetAdressInput={handleSetAdressInput}
-          ></AdressAuto>
+          {showAdressAuto && (
+            <AdressAuto
+              setShowAdressAuto={setShowAdressAuto}
+              adressInput={adressInput}
+              handleSetAdressInput={handleSetAdressInput}
+            ></AdressAuto>
+          )}
         </div>
         <button
           type="submit"
