@@ -5,7 +5,7 @@ import RouteModal from "../NavbarModalAuto/RouteModal";
 
 function RouteOverviewComponent({
   routeInformation,
-  setRouteInformation,
+  handleSetRouteInformation,
   setNewAdress,
 }) {
   const [isModalOpen, setModalOpen] = useState(false); // state for current modal state
@@ -16,12 +16,15 @@ function RouteOverviewComponent({
     startTime,
     adressInput
   ) {
-    setRouteInformation({
+    const newRoute = {
       routeId: newRouteId.current.value,
       defaultBreakDuration: breakDuration.current.value,
       startTime: startTime.current.value,
-    });
-    setNewAdress(adressInput, newRouteId);
+    };
+
+    handleSetRouteInformation(newRoute);
+    setNewAdress(adressInput, newRoute);
+
     setModalOpen(false);
   }
 

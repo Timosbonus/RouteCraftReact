@@ -21,11 +21,6 @@ function App() {
     if (routeInformation) {
       getAllLocations(routeId)
         .then((newLocations) => {
-          if (newLocations.length === 0) {
-            // if there are no locations, sets start point
-            const startPoint = "Ersigstraße 10a, 76275 Ettlingen";
-            setNewAdress(startPoint);
-          }
           setLocations(newLocations);
         })
         .catch((error) => {
@@ -40,10 +35,10 @@ function App() {
   }, [routeInformation]);
 
   // function which accepts a new location updates the location array and sends and receives data from backend, ALWAYS CALL setNewAdress!
-  function handleSetNewAdress(newLocation) {
+  function handleSetNewAdress(newLocation, newRouteInformation) {
     const updatedLocations = [...locations, newLocation];
 
-    updateSaveDeleteLocations(updatedLocations, routeId) // axios method to get data from Backend
+    updateSaveDeleteLocations(updatedLocations, newRouteInformation.routeId) // axios method to get data from Backend
       .then((newLocations) => {
         setLocations(newLocations); // Takes data from api to set array
       })
@@ -53,7 +48,7 @@ function App() {
   }
 
   // function to get the adress data from api and calls the handleSetNewAdress function with the newly received data
-  function setNewAdress(inputValue) {
+  function setNewAdress(inputValue, newRouteInformation) {
     fetch(
       `https://us1.locationiq.com/v1/search?key=${
         process.env.REACT_APP_LOCATIONIQ_KEY
@@ -70,10 +65,11 @@ function App() {
 
           if (!exists) {
             // sets json data for breakDuration and the routeId
-            newLocation.breakDuration = routeInformation.defaultBreakDuration;
-            newLocation.routeId = routeId;
+            newLocation.breakDuration =
+              newRouteInformation.defaultBreakDuration;
+            newLocation.routeId = newRouteInformation.routeId;
             newLocation.current_index = locations.length; // adds new current index to sort later
-            handleSetNewAdress(newLocation);
+            handleSetNewAdress(newLocation, newRouteInformation);
           }
         }
       })
@@ -93,11 +89,11 @@ function App() {
   let curView = (
     <RouteOverviewComponent
       routeInformation={routeInformation}
-      setRouteInformation={handleSetRouteInformation}
+      handleSetRouteInformation={handleSetRouteInformation}
       setNewAdress={setNewAdress}
     ></RouteOverviewComponent>
   );
-  
+
   if (routeInformation) {
     curView = (
       <MapAndLocationSelectionScreen

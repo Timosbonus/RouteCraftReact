@@ -15,7 +15,7 @@ function Navbar({ setNewAdress, routeInformation, setModalOpen }) {
   // Helper Function to get the event from the form und call setNewAdress Function
   const handleSubmit = (event) => {
     event.preventDefault();
-    setNewAdress(adressInput);
+    setNewAdress(adressInput, routeInformation);
   };
 
   // button, when no Route is selected
