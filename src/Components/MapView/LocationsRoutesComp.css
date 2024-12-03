@@ -39,6 +39,9 @@
 }
 
 .arrival-time {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 15px;
   font-weight: bold;
   color: #000000;
@@ -49,6 +52,8 @@
 }
 
 .location-list {
+  display: flex;
+  flex-direction: column;
   list-style-type: none;
   padding: 0;
   margin: 0;

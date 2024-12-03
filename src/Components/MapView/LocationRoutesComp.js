@@ -231,18 +231,19 @@ function LocationRoutesComp({
                                 setLocations(updatedLocations);
                               }}
                             />
-                            <button
-                              onClick={() => handleDeleteLocation(index)}
-                              className="delete-button"
-                            >
-                              <img
-                                className="delete-button-img"
-                                src="./assets/close.png"
-                                alt="Delete"
-                              />
-                            </button>
                           </div>
                         )}
+
+                        <button
+                          onClick={() => handleDeleteLocation(index)}
+                          className="delete-button"
+                        >
+                          <img
+                            className="delete-button-img"
+                            src="./assets/bin.png"
+                            alt="Delete"
+                          />
+                        </button>
 
                         {displayUntilThirdComma(current.display_name)}
                       </li>
