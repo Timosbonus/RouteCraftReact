@@ -89,6 +89,7 @@ function App() {
   let curView = (
     <RouteOverviewComponent
       routeInformation={routeInformation}
+      setRouteInformation={setRouteInformation}
       handleSetRouteInformation={handleSetRouteInformation}
       setNewAdress={setNewAdress}
     ></RouteOverviewComponent>

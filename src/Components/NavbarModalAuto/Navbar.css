@@ -1,6 +1,7 @@
 .custom-navbar {
   background-color: #333;
-  height: 50px;
+  height: 7vh;
+  min-height: 30px;
   padding: 10px 0;
   display: flex;
   align-items: center;

@@ -1,9 +1,10 @@
 .route-list {
+  height: 100%;
   display: grid;
   grid-template-columns: repeat(5, minmax(200px, 1fr));
   gap: 20px;
   padding: 2%;
-  background-color: rgb(224, 224, 224);
+  background: linear-gradient(to bottom, #acb1af, #92b19a);
   justify-content: center;
 }
 
@@ -18,6 +19,7 @@
   flex-direction: column;
   align-items: center;
   width: 75%;
+  height: 150px;
 }
 
 .route-card-content {

@@ -2,10 +2,11 @@ import { useState } from "react";
 import Navbar from "../NavbarModalAuto/Navbar";
 import Modal from "../NavbarModalAuto/Modal";
 import RouteModal from "../NavbarModalAuto/RouteModal";
-import RouteCardListing from "./RouteCardListing"
+import RouteCardListing from "./RouteCardListing";
 
 function RouteOverviewComponent({
   routeInformation,
+  setRouteInformation,
   handleSetRouteInformation,
   setNewAdress,
 }) {
@@ -29,22 +30,30 @@ function RouteOverviewComponent({
     setModalOpen(false);
   }
 
+  function handleEditRouteInformation(currentRouteInfo) {}
+
   return (
     <>
-      <Navbar
-        routeInformation={routeInformation}
-        setModalOpen={setModalOpen}
-      ></Navbar>
-      <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
-        <RouteModal
-          handleNewRouteInformation={handleNewRouteInformation}
+      <div className="overview_container">
+        <Navbar
           routeInformation={routeInformation}
-        >
-          <h2>Add new Route</h2>
-          <p>Add all relevant Information below</p>
-        </RouteModal>
-      </Modal>
-      <RouteCardListing handleSetRouteInformation={handleSetRouteInformation}></RouteCardListing>
+          setModalOpen={setModalOpen}
+        ></Navbar>
+        <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
+          <RouteModal
+            handleNewRouteInformation={handleNewRouteInformation}
+            routeInformation={routeInformation}
+          >
+            <h2>Add new Route</h2>
+            <p>Add all relevant Information below</p>
+          </RouteModal>
+        </Modal>
+        <RouteCardListing
+          handleSetRouteInformation={handleSetRouteInformation}
+          handleEditRouteInformation={handleEditRouteInformation}
+          setRouteInformation={setRouteInformation}
+        ></RouteCardListing>
+      </div>
     </>
   );
 }

@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import "./RouteCardListing.css";
 import { deleteSelectedRoute, getAllRoutes } from "../etc/backendConfig";
 
-function RouteCardListing({ handleSetRouteInformation }) {
+function RouteCardListing({
+  handleSetRouteInformation,
+  handleEditRouteInformation,
+  setRouteInformation,
+}) {
   const [allRoutes, setAllRoutes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -31,7 +35,9 @@ function RouteCardListing({ handleSetRouteInformation }) {
     }
   }
 
-  function deleteRouteByButtonClick(routeId) {
+  function deleteRouteByButtonClick(event, routeId) {
+    event.stopPropagation(); // Prevents the event from bubbling up to the parent div
+    setRouteInformation(false);
     deleteSelectedRoute(routeId).then(() => {
       fetchRoutes();
     });
@@ -40,7 +46,11 @@ function RouteCardListing({ handleSetRouteInformation }) {
   return (
     <div className="route-list">
       {allRoutes.map((r) => (
-        <div key={r.routeId} className="route-card">
+        <div
+          key={r.routeId}
+          className="route-card"
+          onClick={() => handleSetRouteInformation(r)}
+        >
           <div className="route-card-content">
             <div className="route-card-text">
               <h3>{r.routeId}</h3>
@@ -49,7 +59,7 @@ function RouteCardListing({ handleSetRouteInformation }) {
             </div>
             <div className="route-card-buttons">
               <button
-                onClick={() => handleSetRouteInformation(r)}
+                onClick={(event) => handleEditRouteInformation(event, r)}
                 className="icon-button"
               >
                 <img
@@ -59,7 +69,7 @@ function RouteCardListing({ handleSetRouteInformation }) {
                 />
               </button>
               <button
-                onClick={() => deleteRouteByButtonClick(r.routeId)}
+                onClick={(event) => deleteRouteByButtonClick(event, r.routeId)}
                 className="icon-button"
               >
                 <img
