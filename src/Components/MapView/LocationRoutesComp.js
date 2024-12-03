@@ -121,35 +121,38 @@ function LocationRoutesComp({
   };
 
   const handleDeleteLocation = (index) => {
-    // Get the current location to be deleted
-    const currentLocation = locations[index];
+    // dont delete when there only one left
+    if (locations.length > 1) {
+      // Get the current location to be deleted
+      const currentLocation = locations[index];
 
-    // Update the locations by removing the selected one
-    const updatedLocations = locations.filter((_, i) => i !== index);
-    setLocations(updatedLocations);
+      // Update the locations by removing the selected one
+      const updatedLocations = locations.filter((_, i) => i !== index);
+      setLocations(updatedLocations);
 
-    // Update locations in the API
-    updateSaveDeleteLocations(updatedLocations, routeId)
-      .then((newLocations) => {
-        setLocations(newLocations); // Update with API information
-      })
-      .catch((error) => {
-        console.error("Error deleting location: ", error);
-      });
+      // Update locations in the API
+      updateSaveDeleteLocations(updatedLocations, routeId)
+        .then((newLocations) => {
+          setLocations(newLocations); // Update with API information
+        })
+        .catch((error) => {
+          console.error("Error deleting location: ", error);
+        });
 
-    // Use the index to delete the matching direction
-    const updatedDirections = directions.filter(
-      (direction) => direction.currentIndex !== currentLocation.currentIndex
-    );
+      // Use the index to delete the matching direction
+      const updatedDirections = directions.filter(
+        (direction) => direction.currentIndex !== currentLocation.currentIndex
+      );
 
-    // Update directions in the API
-    updateSaveDeleteDirections(updatedDirections, routeId)
-      .then((newDirections) => {
-        setDirections(newDirections);
-      })
-      .catch((error) => {
-        console.error("Error deleting direction: ", error);
-      });
+      // Update directions in the API
+      updateSaveDeleteDirections(updatedDirections, routeId)
+        .then((newDirections) => {
+          setDirections(newDirections);
+        })
+        .catch((error) => {
+          console.error("Error deleting direction: ", error);
+        });
+    }
   };
 
   function displayUntilThirdComma(str) {
@@ -203,7 +206,7 @@ function LocationRoutesComp({
                       >
                         {index > 0 && (
                           <div className="arrival-time">
-                            Arr:{" "}
+                            Abfahrt:{" "}
                             {calculateArrivalTime(index).toLocaleTimeString(
                               [],
                               {
@@ -211,26 +214,24 @@ function LocationRoutesComp({
                                 minute: "2-digit",
                               }
                             )}{" "}
-                            |
                             <span className="departure-time-display">
-                              Dep: {calculateDepartureTime(index)} |
+                              Pause:
+                              <input
+                                type="number"
+                                value={locations[index].breakDuration}
+                                className="break-duration"
+                                placeholder="Break (Min)"
+                                onChange={(e) => {
+                                  const updatedLocations = [...locations];
+                                  updatedLocations[index].breakDuration =
+                                    Number(e.target.value);
+                                  setLocations(updatedLocations);
+                                }}
+                              />
                             </span>
                             <span className="departure-time-display">
-                              Stop:
+                              Abfahrt: {calculateDepartureTime(index)}
                             </span>
-                            <input
-                              type="number"
-                              value={locations[index].breakDuration}
-                              className="break-duration"
-                              placeholder="Break (Min)"
-                              onChange={(e) => {
-                                const updatedLocations = [...locations];
-                                updatedLocations[index].breakDuration = Number(
-                                  e.target.value
-                                );
-                                setLocations(updatedLocations);
-                              }}
-                            />
                           </div>
                         )}
 
