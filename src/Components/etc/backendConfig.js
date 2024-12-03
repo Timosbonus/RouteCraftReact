@@ -120,9 +120,9 @@ export const deleteSelectedRoute = async (routeId) => {
   }
 };
 
-export const getAllRoutes = async (routeId) => {
+export const getAllRoutes = async () => {
   try {
-    const response = await axios.put(`${API_BACKEND}/routes/all`, {
+    const response = await axios.get(`${API_BACKEND}/routes/all`, {
       headers: {
         "Content-Type": "application/json",
       },

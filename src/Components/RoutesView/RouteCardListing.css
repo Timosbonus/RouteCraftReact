@@ -1,0 +1,35 @@
+.route-list {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(200px, 1fr)
+  ); /* Fixed size with responsive wrapping */
+  gap: 20px; /* Consistent gap between cards */
+  padding: 2%;
+  background-color: rgb(224, 224, 224);
+  justify-content: center; /* Center the grid in the container */
+}
+
+.route-card {
+  background-color: #fff;
+  border-radius: 14px;
+  border: 1px solid green;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.route-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.route-card-header h3 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.route-card-body p {
+  font-size: 14px;
+  margin: 5px 0;
+}
