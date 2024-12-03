@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./RouteCardListing.css";
-import { getAllRoutes } from "../etc/backendConfig";
+import { deleteSelectedRoute, getAllRoutes } from "../etc/backendConfig";
 
 function RouteCardListing({ handleSetRouteInformation }) {
   const [allRoutes, setAllRoutes] = useState([]);
@@ -9,17 +9,6 @@ function RouteCardListing({ handleSetRouteInformation }) {
 
   // useEffect to get all Routes from Backend
   useEffect(() => {
-    const fetchRoutes = async () => {
-      try {
-        const fetchedRoutes = await getAllRoutes();
-        setAllRoutes(fetchedRoutes);
-      } catch (err) {
-        setError("Fehler beim Laden der Routen");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchRoutes();
   }, []);
 
@@ -31,7 +20,22 @@ function RouteCardListing({ handleSetRouteInformation }) {
     return <div>{error}</div>;
   }
 
-  console.log(allRoutes);
+  async function fetchRoutes() {
+    try {
+      const fetchedRoutes = await getAllRoutes();
+      setAllRoutes(fetchedRoutes);
+    } catch (err) {
+      setError("Fehler beim Laden der Routen");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function deleteRouteByButtonClick(routeId) {
+    deleteSelectedRoute(routeId).then((deletedRoute) => {
+      fetchRoutes();
+    });
+  }
 
   return (
     <div className="route-list">

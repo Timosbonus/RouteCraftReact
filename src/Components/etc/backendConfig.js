@@ -113,6 +113,9 @@ export const deleteSelectedRoute = async (routeId) => {
         "Content-Type": "application/json",
       },
     });
+    // remove all locations and directions with same routeId
+    updateSaveDeleteDirections([], routeId);
+    updateSaveDeleteLocations([], routeId);
     return response.data; // method returns deleted route
   } catch (error) {
     console.error("Error: ", error);
@@ -127,6 +130,7 @@ export const getAllRoutes = async () => {
         "Content-Type": "application/json",
       },
     });
+
     return response.data; // method returns selected route
   } catch (error) {
     console.error("Error: ", error);
