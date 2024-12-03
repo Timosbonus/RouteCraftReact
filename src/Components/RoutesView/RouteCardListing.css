@@ -20,13 +20,45 @@
   width: 75%;
 }
 
+.route-card-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.route-card-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.icon-button {
+  all: unset;
+}
+
+.icon-button-image {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  transition: transform 0.1s;
+}
+
+.icon-button:hover .icon-button-image {
+  transform: scale(1.1);
+}
+
+.icon-button:hover {
+  background-color: transparent;
+}
+
 .route-card:hover {
   transform: translateY(-10px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .route-card-header h3 {
-  font-size: 18px;
+  font-size: 24px;
   margin: 0;
 }
 
