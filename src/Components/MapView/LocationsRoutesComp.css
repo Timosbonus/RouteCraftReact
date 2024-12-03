@@ -60,6 +60,11 @@
   width: 100%;
 }
 
+.adress-text-and-delete-button {
+  display: flex;
+  justify-content: space-between;
+}
+
 .location-item {
   display: flex;
   flex-direction: column;
@@ -104,13 +109,12 @@
   background: none;
   border: none;
   padding: 0;
-  cursor: pointer;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  transition: transform 0.1s ease;
 }
 
 .delete-button:hover {
-  opacity: 0.9;
-  transform: scale(1.05);
+  background-color: transparent;
+  transform: scale(1.1);
 }
 
 .delete-button-img {

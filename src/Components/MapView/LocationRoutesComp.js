@@ -234,18 +234,19 @@ function LocationRoutesComp({
                           </div>
                         )}
 
-                        <button
-                          onClick={() => handleDeleteLocation(index)}
-                          className="delete-button"
-                        >
-                          <img
-                            className="delete-button-img"
-                            src="./assets/bin.png"
-                            alt="Delete"
-                          />
-                        </button>
-
-                        {displayUntilThirdComma(current.display_name)}
+                        <div className="adress-text-and-delete-button">
+                          {displayUntilThirdComma(current.display_name)}
+                          <button
+                            onClick={() => handleDeleteLocation(index)}
+                            className="delete-button"
+                          >
+                            <img
+                              className="delete-button-img"
+                              src="./assets/bin.png"
+                              alt="Delete"
+                            />
+                          </button>
+                        </div>
                       </li>
                     )}
                   </Draggable>
