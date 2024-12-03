@@ -203,7 +203,7 @@ function LocationRoutesComp({
                       >
                         {index > 0 && (
                           <div className="arrival-time">
-                            Arrival:{" "}
+                            Arr:{" "}
                             {calculateArrivalTime(index).toLocaleTimeString(
                               [],
                               {
@@ -213,10 +213,10 @@ function LocationRoutesComp({
                             )}{" "}
                             |
                             <span className="departure-time-display">
-                              Departure: {calculateDepartureTime(index)} |
+                              Dep: {calculateDepartureTime(index)} |
                             </span>
                             <span className="departure-time-display">
-                              Break:
+                              Stop:
                             </span>
                             <input
                               type="number"

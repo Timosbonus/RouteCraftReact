@@ -20,7 +20,7 @@ function RouteModal({ children, handleNewRouteInformation, routeInformation }) {
   if (routeInformation) {
     // checks if routeId is false, if not gets already existing values
     newRouteId.current = routeInformation.routeId;
-    breakDuration.current = routeInformation.breakDuration;
+    breakDuration.current = routeInformation.defaultBreakDuration;
     startTime.current = routeInformation.startTime;
   }
 
@@ -75,7 +75,12 @@ function RouteModal({ children, handleNewRouteInformation, routeInformation }) {
           type="submit"
           style={{ marginTop: "20px" }}
           onClick={() =>
-            handleNewRouteInformation(newRouteId, breakDuration, startTime, adressInput)
+            handleNewRouteInformation(
+              newRouteId,
+              breakDuration,
+              startTime,
+              adressInput
+            )
           }
         >
           Save new Route

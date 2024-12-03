@@ -3,6 +3,7 @@ import Navbar from "../NavbarModalAuto/Navbar";
 import Modal from "../NavbarModalAuto/Modal";
 import RouteModal from "../NavbarModalAuto/RouteModal";
 import RouteCardListing from "./RouteCardListing";
+import { deleteSelectedRoute } from "../etc/backendConfig";
 
 function RouteOverviewComponent({
   routeInformation,
@@ -26,11 +27,12 @@ function RouteOverviewComponent({
 
     handleSetRouteInformation(newRoute);
     setNewAdress(adressInput, newRoute);
-
     setModalOpen(false);
   }
 
-  function handleEditRouteInformation(currentRouteInfo) {}
+  function handleEditRouteInformation(event, currentRouteInfo) {
+    event.stopPropagation(); // Prevents the event from bubbling up to the parent div
+  }
 
   return (
     <>
@@ -40,11 +42,8 @@ function RouteOverviewComponent({
           setModalOpen={setModalOpen}
         ></Navbar>
         <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
-          <RouteModal
-            handleNewRouteInformation={handleNewRouteInformation}
-            routeInformation={routeInformation}
-          >
-            <h2>Add new Route</h2>
+          <RouteModal handleNewRouteInformation={handleNewRouteInformation}>
+            <h2>Edit Route</h2>
             <p>Add all relevant Information below</p>
           </RouteModal>
         </Modal>
