@@ -137,3 +137,18 @@ export const getAllRoutes = async () => {
     throw error;
   }
 };
+
+export const checkIfRouteIdExists = async (routeId) => {
+  try {
+    const response = await axios.get(`${API_BACKEND}/routes/check/${routeId}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (response.data === true) return true;
+    return false;
+  } catch (error) {
+    console.error("Error: ", error);
+    throw error;
+  }
+};
