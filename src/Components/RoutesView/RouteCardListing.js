@@ -27,16 +27,17 @@ function RouteCardListing({
     }
   }
 
-  function handleSelectedRouteDeletion(routeId) {
+  function handleSelectedRouteDeletion(event, routeId) {
+    event.stopPropagation();
     setSelectedRouteToDelete(routeId);
   }
 
   function deleteRouteByButtonClick(event, routeId) {
-    event.stopPropagation(); // Prevents the event from bubbling up to the parent div
     setRouteInformation(false);
-    deleteSelectedRoute(routeId).then(() => {
+    deleteSelectedRoute(routeId).then((deleted) => {
       fetchRoutes();
-      handleSelectedRouteDeletion(null);
+      handleSelectedRouteDeletion(event, null);
+      setModalOpen(false);
     });
   }
 
@@ -67,8 +68,8 @@ function RouteCardListing({
                   />
                 </button>
                 <button
-                  onClick={() => {
-                    handleSelectedRouteDeletion(r.routeId);
+                  onClick={(event) => {
+                    handleSelectedRouteDeletion(event, r.routeId);
                     setModalOpen(true);
                   }}
                   className="icon-button"
@@ -89,7 +90,7 @@ function RouteCardListing({
           deleteSelectedRoute={deleteRouteByButtonClick}
           route={selectedRouteToDelete}
         >
-          BliBa
+          Soll die Route wirklich gelöscht werden?
         </DeletionModal>
       </Modal>
     </div>

@@ -1,11 +1,9 @@
 function DeletionModal({ children, deleteSelectedRoute, route }) {
-  console.log("heeey");
+  console.log(route);
   return (
     <div>
       <p>{children}</p>
-      <button onClick={(event) => deleteSelectedRoute(event, route)}>
-        Löschen
-      </button>
+      <button onClick={(e) => deleteSelectedRoute(e, route)}>Löschen</button>
     </div>
   );
 }
