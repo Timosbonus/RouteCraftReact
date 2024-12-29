@@ -1,4 +1,5 @@
 function DeletionModal({ children, deleteSelectedRoute, route }) {
+  console.log("heeey");
   return (
     <div>
       <p>{children}</p>

@@ -1,11 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Navbar from "../NavbarModalAuto/Navbar";
 import Modal from "../NavbarModalAuto/Modal";
 import RouteModal from "../NavbarModalAuto/RouteModal";
-import DeletionModal from "../NavbarModalAuto/DeletionModal";
 import RouteCardListing from "./RouteCardListing";
-
-import { deleteSelectedRoute, getAllRoutes } from "../etc/backendConfig";
 
 function RouteOverviewComponent({
   routeInformation,
@@ -14,35 +11,6 @@ function RouteOverviewComponent({
   setNewAdress,
 }) {
   const [isModalOpen, setModalOpen] = useState(false); // state for current modal state
-  const [deletionModal, setDeletionModal] = useState(false); // state for Modal to confirm deletion
-  const [allRoutes, setAllRoutes] = useState([]);
-  const [selectedRouteToDelete, setSelectedRouteToDelete] = useState(false);
-
-  // useEffect to get all Routes from Backend
-  useEffect(() => {
-    fetchRoutes();
-  }, [allRoutes]);
-
-  async function fetchRoutes() {
-    try {
-      const fetchedRoutes = await getAllRoutes();
-      setAllRoutes(fetchedRoutes);
-    } catch (err) {
-      return <div>Fehler beim Laden der Routen</div>;
-    }
-  }
-
-  function performDeleteButtonActions(routeId) {
-    setSelectedRouteToDelete(routeId);
-  }
-
-  function deleteRouteByButtonClick(event, routeId) {
-    event.stopPropagation(); // Prevents the event from bubbling up to the parent div
-    setRouteInformation(false);
-    deleteSelectedRoute(routeId).then(() => {
-      fetchRoutes();
-    });
-  }
 
   // adds new Route Information and adds first new Adress, Route ID etc.
   function handleNewRouteInformation(
@@ -81,20 +49,10 @@ function RouteOverviewComponent({
           </RouteModal>
         </Modal>
 
-        <Modal isOpen={deletionModal} onClose={() => setDeletionModal(false)}>
-          <DeletionModal
-            deleteSelectedRoute={performDeleteButtonActions}
-            route={selectedRouteToDelete}
-          >
-            Du Wolle wirklich lösche ehh?
-          </DeletionModal>
-        </Modal>
-
         <RouteCardListing
           handleSetRouteInformation={handleSetRouteInformation}
           handleEditRouteInformation={handleEditRouteInformation}
-          deleteRouteByButtonClick={performDeleteButtonActions}
-          allRoutes={allRoutes}
+          setRouteInformation={setRouteInformation}
         ></RouteCardListing>
       </div>
     </>
