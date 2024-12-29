@@ -1,49 +1,11 @@
-import { useEffect, useState } from "react";
 import "./RouteCardListing.css";
-import { deleteSelectedRoute, getAllRoutes } from "../etc/backendConfig";
-import Modal from "../NavbarModalAuto/Modal";
 
 function RouteCardListing({
   handleSetRouteInformation,
   handleEditRouteInformation,
-  setRouteInformation,
+  deleteRouteByButtonClick,
+  allRoutes,
 }) {
-  const [allRoutes, setAllRoutes] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  // useEffect to get all Routes from Backend
-  useEffect(() => {
-    fetchRoutes();
-  }, [allRoutes]);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
-
-  async function fetchRoutes() {
-    try {
-      const fetchedRoutes = await getAllRoutes();
-      setAllRoutes(fetchedRoutes);
-    } catch (err) {
-      setError("Fehler beim Laden der Routen");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  function deleteRouteByButtonClick(event, routeId) {
-    event.stopPropagation(); // Prevents the event from bubbling up to the parent div
-    setRouteInformation(false);
-    deleteSelectedRoute(routeId).then(() => {
-      fetchRoutes();
-    });
-  }
-
   return (
     <div className="route-list">
       {allRoutes.map((r) => (
