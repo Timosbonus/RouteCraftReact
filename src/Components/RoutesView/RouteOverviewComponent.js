@@ -3,7 +3,6 @@ import Navbar from "../NavbarModalAuto/Navbar";
 import Modal from "../NavbarModalAuto/Modal";
 import RouteModal from "../NavbarModalAuto/RouteModal";
 import RouteCardListing from "./RouteCardListing";
-import { deleteSelectedRoute } from "../etc/backendConfig";
 
 function RouteOverviewComponent({
   routeInformation,

@@ -1,5 +1,6 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AdressAuto from "./AdressAuto";
+import { checkIfRouteIdExists } from "../etc/backendConfig";
 
 function RouteModal({ children, handleNewRouteInformation, routeInformation }) {
   // refs for standard values
@@ -10,12 +11,34 @@ function RouteModal({ children, handleNewRouteInformation, routeInformation }) {
     "Ersigstraße 10a, 76275 Ettlingen"
   ); // adressInput Standard Value
   const [showAdressAuto, setShowAdressAuto] = useState(false); // state to handle when the AdressAuto Component suggestions should show up
+  const [routeIdExists, setRouteIdExists] = useState(false);
 
   // handles new SetAdressInput and sets the state of showAdressAuto
   function handleSetAdressInput(input, showState) {
     setAdressInput(input);
     setShowAdressAuto(showState);
   }
+
+  // function to check submit and if routeIdExists is false, performs function
+  function handleSubmit(newRouteId, breakDuration, startTime, adressInput) {
+    handleNewRouteInformation(
+      newRouteId,
+      breakDuration,
+      startTime,
+      adressInput
+    );
+  }
+
+  // checks if routeId already exisits and sets State
+  async function handleRouteIdCheck(routeId) {
+    const exists = await checkIfRouteIdExists(routeId);
+    setRouteIdExists(exists);
+  }
+
+  // checks every routeId in the beginning
+  useEffect(() => {
+    handleRouteIdCheck(newRouteId.current.value);
+  }, []);
 
   if (routeInformation) {
     // checks if routeId is false, if not gets already existing values
@@ -35,7 +58,11 @@ function RouteModal({ children, handleNewRouteInformation, routeInformation }) {
             id="routeId"
             defaultValue={newRouteId.current}
             ref={newRouteId} // ref for newRouteId
+            onBlur={() => handleRouteIdCheck(newRouteId.current.value)}
           />
+          {routeIdExists && (
+            <span style={{ color: "red" }}>Route ID existier bereits</span>
+          )}
         </div>
         <div>
           <label>Break</label>
@@ -74,14 +101,10 @@ function RouteModal({ children, handleNewRouteInformation, routeInformation }) {
         <button
           type="submit"
           style={{ marginTop: "20px" }}
-          onClick={() =>
-            handleNewRouteInformation(
-              newRouteId,
-              breakDuration,
-              startTime,
-              adressInput
-            )
-          }
+          disabled={routeIdExists}
+          onClick={() => {
+            handleSubmit(newRouteId, breakDuration, startTime, adressInput);
+          }}
         >
           Save new Route
         </button>

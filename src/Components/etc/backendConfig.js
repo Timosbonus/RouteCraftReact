@@ -145,8 +145,7 @@ export const checkIfRouteIdExists = async (routeId) => {
         "Content-Type": "application/json",
       },
     });
-    if (response.data === true) return true;
-    return false;
+    return response.data;
   } catch (error) {
     console.error("Error: ", error);
     throw error;

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./RouteCardListing.css";
 import { deleteSelectedRoute, getAllRoutes } from "../etc/backendConfig";
+import Modal from "../NavbarModalAuto/Modal";
 
 function RouteCardListing({
   handleSetRouteInformation,
