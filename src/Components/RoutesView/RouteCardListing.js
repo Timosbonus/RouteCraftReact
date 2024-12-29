@@ -32,7 +32,7 @@ function RouteCardListing({
                 />
               </button>
               <button
-                onClick={(event) => deleteRouteByButtonClick(event, r.routeId)}
+                onClick={(e) => deleteRouteByButtonClick(e, r.routeId)}
                 className="icon-button"
               >
                 <img
